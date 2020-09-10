@@ -1,0 +1,13 @@
+{
+  "name": "data-gen",
+  "version": "0.0.0",
+  "description": "Data generator",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexterliuk/data-gen.git"
+  },
+  "author": "Alex Terliuk",
+  "license": "MIT",
+  "homepage": "https://github.com/alexterliuk/data-gen"
+}
