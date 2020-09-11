@@ -1,5 +1,3 @@
-const { makeRed } = require('../lib/color-makers');
-
 /**
  * Library for testing (used only when DataGen.test is invoked).
  * @param {object} valueChecker
@@ -15,7 +13,8 @@ function getLogger(valueChecker, helper, options, optionsApp) {
   const _optsTesting = options || {}.testing;
 
   if (!_v || !_h || !_o || !_opts) {
-    console.log(makeRed('[getLogger]: valueChecker, helper, options, optionsApp arguments are required when calling getLogger.'));
+    const msg = '[getLogger]: valueChecker, helper, options, optionsApp arguments are required when calling getLogger.';
+    this.makeRed ? console.log(this.makeRed(msg)) : console.error(msg);
     return {};
   }
 
