@@ -1,9 +1,10 @@
 /**
- * @param {object} valueChecker
+ *   @param {object} valueChecker
  */
 function getHelper(valueChecker) {
   const _v = valueChecker;
 
+  // $h is alias for helper
   const $h = {
     notifStart: option => `[${option.name}, path - '${option.path}']: `,
 
@@ -15,6 +16,12 @@ function getHelper(valueChecker) {
                                   : `${(str[0] || '').toUpperCase()}${str.slice(1)}`,
 
     getRandomElementFromArray: (obj, key) => {
+      if (!_v) {
+        const msg = '[getRandomElementFromArray]: no valueChecker provided for this function job.';
+        this.makeRed ? console.log(this.makeRed(msg)) : console.error(msg);
+        return false;
+      }
+
       const arr = _v.isArray(obj[key]) && obj[key];
       return arr && arr.length ? arr[$h.getRandomFloor(0, arr.length)] : false;
     },
@@ -27,6 +34,12 @@ function getHelper(valueChecker) {
      *   @param {string} type - type the container expected to be of
      */
     getNotEmptyContainer: (cont, type) => {
+      if (!_v) {
+        const msg = '[getNotEmptyContainer]: no valueChecker provided for this function job.';
+        this.makeRed ? console.log(this.makeRed(msg)) : console.error(msg);
+        return false;
+      }
+
       if (type === 'array') return _v.isArray(cont) && !!cont.length && cont;
       if (type === 'object') return _v.isObject(cont) && !!Object.keys(cont).length && cont;
     },
