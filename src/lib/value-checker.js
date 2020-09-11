@@ -1,4 +1,4 @@
-// collection of helper functions to check values
+// valueChecker - collection of helper functions to check values
 
 const $v = {
   isNull: val => val === null,
