@@ -1,4 +1,4 @@
-const { makeRed } = require('../lib/get-color-makers');
+const { makeRed } = require('../lib/color-makers');
 
 /**
  * Library for testing (used only when DataGen.test is invoked).
