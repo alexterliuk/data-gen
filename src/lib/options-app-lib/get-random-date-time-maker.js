@@ -30,15 +30,15 @@ function getRandomDateTimeMaker(valueChecker, helper, optionsApp) {
 
     // default - from 1900 to current year
     dt.year = optYears ? optYears[_h.getRandomFloor(0, optYears.length)]
-      : _h.getRandomFloor(1900, (new Date).getFullYear() + 1);
+                       : _h.getRandomFloor(1900, (new Date).getFullYear() + 1);
 
     leapYear = !((2020 - dt.year) % 4);
 
     dt.month = optMonths ? optMonths[_h.getRandomFloor(0, optMonths.length)]
-      : _h.getRandomFloor(1, 13);
+                         : _h.getRandomFloor(1, 13);
 
     maxDateEnd = dt.month < 8 ? (dt.month % 2 ? 31 : 30)
-      : dt.month % 2 ? 30 : 31;
+                              : dt.month % 2 ? 30 : 31;
 
     let day;
     if (optDates) {
@@ -49,13 +49,13 @@ function getRandomDateTimeMaker(valueChecker, helper, optionsApp) {
     dt.date = day || _h.getRandomFloor(1, dt.month === 2 ? (leapYear ? 30 : 29) : maxDateEnd + 1);
 
     dt.hours = optHours ? optHours[_h.getRandomFloor(0, optHours.length)]
-      : _h.getRandomFloor(0, 24);
+                        : _h.getRandomFloor(0, 24);
 
     dt.minutes = optMinutes ? optMinutes[_h.getRandomFloor(0, optMinutes.length)]
-      : _h.getRandomFloor(0, 60);
+                            : _h.getRandomFloor(0, 60);
 
     dt.seconds = optSeconds ? optSeconds[_h.getRandomFloor(0, optSeconds.length)]
-      : _h.getRandomFloor(0, 60);
+                            : _h.getRandomFloor(0, 60);
 
     // make date and time representation
     for (const num of [dt.year, dt.month, dt.date]) {

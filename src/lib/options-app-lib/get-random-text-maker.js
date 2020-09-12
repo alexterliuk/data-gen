@@ -25,14 +25,14 @@ function getRandomTextMaker(valueChecker, helper, optionsApp) {
     if (elementFromCollection) return elementFromCollection;
 
     const minLength = _v.isNumber(option.data.minLength)
-      && !_v.isInfinity(option.data.minLength)
-      && option.data.minLength >= 0
-      && option.data.minLength;
+                  && !_v.isInfinity(option.data.minLength)
+                  && option.data.minLength >= 0
+                  && option.data.minLength;
 
     const maxLength = _v.isNumber(option.data.maxLength)
-      && !_v.isInfinity(option.data.maxLength)
-      && option.data.maxLength >= 0
-      && option.data.maxLength;
+                  && !_v.isInfinity(option.data.maxLength)
+                  && option.data.maxLength >= 0
+                  && option.data.maxLength;
     // minLength, maxLength now can be - false || positive integer || 0
 
     return makeText(option.data, minLength, maxLength, option);
@@ -68,7 +68,9 @@ function getRandomTextMaker(valueChecker, helper, optionsApp) {
         let origLength = text.length;
         text = text.trimStart();
         // if length changed, restore it
-        while (text.length < origLength) text = text.concat(alph[_h.getRandomFloor(0, alph.length)]);
+        while (text.length < origLength) {
+          text = text.concat(alph[_h.getRandomFloor(0, alph.length)]);
+        }
 
         if (!data.startFromBeginning) {
           // make text start from known char (which is present in alph), if it isn't
