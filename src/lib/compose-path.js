@@ -23,3 +23,5 @@ function composePath(pathSegments, options) {
 
   return pathSegments.reduce((acc, segm) => acc += make[syntaxType](acc, segm), '');
 }
+
+module.exports = composePath;
