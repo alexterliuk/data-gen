@@ -135,7 +135,7 @@ function getLogger(valueChecker, helper, options, optionsApp) {
             return paths[path][0];
 
           } else {
-            const parentPath = composePath(pathSegments.slice(0, pathSegments.length - 1), _opts);
+            const parentPath = this.composePath(pathSegments.slice(0, pathSegments.length - 1), _opts);
             paths[path] = [paths[parentPath][0][key]];
 
             if (showAll) {
@@ -158,7 +158,7 @@ function getLogger(valueChecker, helper, options, optionsApp) {
      *   @param {string} msg - message to log
      */
     testing: (data, dataName, msg) => {
-      if (!testingData) return;
+      if (!this.testingDataMode.activated) return;
 
       const arrSymb = _o.charSymbols.array;
       const objSymb = _o.charSymbols.object;
@@ -258,8 +258,8 @@ function getLogger(valueChecker, helper, options, optionsApp) {
      * Clear state when current call is complete.
      */
     clearState: () => {
-      if (!testingData) return;
-      testingData = false;
+      if (!this.testingDataMode.activated) return;
+      this.testingDataMode.activated = false;
       $log.getVal.clearPaths();
     },
   }; // end of $log
