@@ -2,6 +2,7 @@
  *   @param {object} valueChecker
  */
 function getHelper(valueChecker) {
+  const logErr = this.makeRed ? str => console.log(this.makeRed(str)) : console.error;
   const _v = valueChecker;
 
   // $h is alias for helper
@@ -18,7 +19,7 @@ function getHelper(valueChecker) {
     getRandomElementFromArray: (obj, key) => {
       if (!_v) {
         const msg = '[getRandomElementFromArray]: no valueChecker provided for this function job.';
-        this.makeRed ? console.log(this.makeRed(msg)) : console.error(msg);
+        logErr(msg);
         return false;
       }
 
@@ -36,7 +37,7 @@ function getHelper(valueChecker) {
     getNotEmptyContainer: (cont, type) => {
       if (!_v) {
         const msg = '[getNotEmptyContainer]: no valueChecker provided for this function job.';
-        this.makeRed ? console.log(this.makeRed(msg)) : console.error(msg);
+        logErr(msg);
         return false;
       }
 
