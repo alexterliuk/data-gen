@@ -1,9 +1,9 @@
 /**
  * Library for testing (used only when DataGen.test is invoked).
- * @param {object} valueChecker
- * @param {object} helper
- * @param {object} options - user defined
- * @param {object} optionsApp - app defined
+ *   @param {object} valueChecker
+ *   @param {object} helper
+ *   @param {object} options - user defined
+ *   @param {object} optionsApp - app defined
  */
 function getLogger(valueChecker, helper, options, optionsApp) {
   const _v = valueChecker;
