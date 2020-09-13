@@ -40,6 +40,7 @@ function getOptionsApp(valueChecker, helper, bindCtx) {
   };
 
   _o.testing = {}; // takes in testing options (if any) from user options, used by $log lib
+  _o.testing.pathSyntax = {};
   _o.temp = {};
 
   return _o;

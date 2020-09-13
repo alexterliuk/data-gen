@@ -106,7 +106,7 @@ function getLogger(valueChecker, helper, optionsApp) {
     /**
      * Value getter lib.
      */
-    getVal: (function() {
+    getVal: (() => {
       let paths = {};
 
       return {
@@ -132,7 +132,7 @@ function getLogger(valueChecker, helper, optionsApp) {
             return paths[path][0];
 
           } else {
-            const parentPath = this.composePath(pathSegments.slice(0, pathSegments.length - 1), _opts);
+            const parentPath = this.composePath(pathSegments.slice(0, pathSegments.length - 1), _o.testing);
             paths[path] = [paths[parentPath][0][key]];
 
             if (showAll) {
