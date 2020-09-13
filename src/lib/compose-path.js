@@ -1,9 +1,9 @@
 /**
  * Compose path from path segments.
  *   @param {array} pathSegments - collection with strings and/or numbers
- *   @param {object} optionsAppTesting
+ *   @param {object} optionsApp - to take pathSyntax from
  */
-function composePath(pathSegments, optionsAppTesting) {
+function composePath(pathSegments, optionsApp) {
   const make = {
     v1: (path, segment) => typeof segment === 'number' ? `[${segment}]` : !path.length ? `${segment}` : `.${segment}`,
     v2: (path, segment) => typeof segment === 'number' ? `['${segment}']` : !path.length ? `${segment}` : `.${segment}`,
@@ -12,7 +12,7 @@ function composePath(pathSegments, optionsAppTesting) {
     v5: (path, segment) => `["${segment}"]`,
   };
 
-  const syntax = (optionsAppTesting || {}).pathSyntax;
+  const syntax = (optionsApp || {}).pathSyntax;
   const syntaxType = !syntax ? 'v1'
                              : syntax.singleQuotes && syntax.squareBraced ? 'v4'
                              : syntax.singleQuotes ? 'v2'

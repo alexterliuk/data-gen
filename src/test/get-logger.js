@@ -132,7 +132,7 @@ function getLogger(valueChecker, helper, optionsApp) {
             return paths[path][0];
 
           } else {
-            const parentPath = this.composePath(pathSegments.slice(0, pathSegments.length - 1), _o.testing);
+            const parentPath = this.composePath(pathSegments.slice(0, pathSegments.length - 1), _o);
             paths[path] = [paths[parentPath][0][key]];
 
             if (showAll) {
