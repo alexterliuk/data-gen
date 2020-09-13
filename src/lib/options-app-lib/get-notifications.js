@@ -4,7 +4,7 @@
  *   @param {object} helper
  */
 function getNotifications(valueChecker, helper) {
-  const logErr = this.makeRed ? str => console.log(this.makeRed(str)) : console.efrror;
+  const logErr = this.makeRed ? str => console.log(this.makeRed(str)) : console.error;
   const _v = valueChecker;
   const _h = helper;
 
