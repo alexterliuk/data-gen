@@ -11,7 +11,7 @@ function getRandomNumberMaker(valueChecker, optionsApp) {
 
   /**
    * option.data:
-   *     {numbers} - min, max, digitsAfterFloatingPoint
+   *     {numbers} min, max, digitsAfterFloatingPoint
    */
   function makeRandomNumber(option) {
     const od = option.data;
