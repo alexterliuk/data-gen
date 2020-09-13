@@ -2,18 +2,15 @@
  * Library for testing (used only when DataGen.test is invoked).
  *   @param {object} valueChecker
  *   @param {object} helper
- *   @param {object} options - user defined
- *   @param {object} optionsApp - app defined
+ *   @param {object} optionsApp - options defined in app
  */
-function getLogger(valueChecker, helper, options, optionsApp) {
+function getLogger(valueChecker, helper, optionsApp) {
   const _v = valueChecker;
   const _h = helper;
   const _o = optionsApp;
-  const _opts = options;
-  const _optsTesting = options || {}.testing;
 
-  if (!_v || !_h || !_o || !_opts) {
-    const msg = '[getLogger]: valueChecker, helper, options, optionsApp arguments are required when calling getLogger.';
+  if (!_v || !_h || !_o) {
+    const msg = '[getLogger]: valueChecker, helper, optionsApp arguments are required when calling getLogger.';
     this.makeRed ? console.log(this.makeRed(msg)) : console.error(msg);
     return {};
   }
@@ -122,7 +119,7 @@ function getLogger(valueChecker, helper, options, optionsApp) {
          *   @param {array} pathSegments
          */
         byPath: (level, dataCollector, key, path, pathSegments) => {
-          const showAll = _optsTesting.showAllNewVals;
+          const showAll = _o.testing.showAllNewVals;
 
           if (!level) {
             paths[path] = [dataCollector[0][key]];
@@ -163,7 +160,7 @@ function getLogger(valueChecker, helper, options, optionsApp) {
       const arrSymb = _o.charSymbols.array;
       const objSymb = _o.charSymbols.object;
       const strSymb = _o.charSymbols.string;
-      const spaceLength = _v.getPositiveIntegerOrZero(_optsTesting.maxSpaceLength) || 30;
+      const spaceLength = _v.getPositiveIntegerOrZero(_o.testing.maxSpaceLength) || 30;
       const space = Array(spaceLength + 1).fill(' ').join(''); // space.length is +1 bigger, so that max space between columns
                                                                // can be === spaceLength, otherwise max space is spaceLength - 1
       const columnsNames = $log.composeLogLine(space, 'KEY', 'VALUE ORIG', 'VALUE NEW', 'TYPE ORIG - NEW', 'PATH');
@@ -181,13 +178,13 @@ function getLogger(valueChecker, helper, options, optionsApp) {
         srcAnalysis: 'Data analysis complete:',
 
         elementsByCurrentLevel: () => {
-          console.log('_optsTesting:', _optsTesting);
-          if (_optsTesting.keepDataTypes && !_o.temp.elementsByCurrentLevel_NB1logged) {
+          console.log('_o.testing:', _o.testing);
+          if (_o.testing.keepDataTypes && !_o.temp.elementsByCurrentLevel_NB1logged) {
             console.warn('NB: objects, arrays and long strings are wrapped in arrays for neat table view of logging data.');
             _o.temp.elementsByCurrentLevel_NB1logged = true;
           }
           console.log(`${headerDash} ELEMENTS BY LEVEL ${data.level} ${headerLongDash}`);
-          console.log(_optsTesting.keepDataTypes ? ' ' + columnsNames : columnsNames);
+          console.log(_o.testing.keepDataTypes ? ' ' + columnsNames : columnsNames);
 
           data.elementsByLevel[data.level].forEach(obj => {
             const key = obj.propertyName || obj.index;
@@ -197,7 +194,7 @@ function getLogger(valueChecker, helper, options, optionsApp) {
             let typeOrigNew = obj.type === newType ? `${obj.type} - ${newType}`
                                                    : Error(`name>>DIFF\n msg>>Types of values are different.\n orig>>${obj.type}\n new>>${newType}`);
 
-            if (_optsTesting.keepDataTypes) {
+            if (_o.testing.keepDataTypes) {
               $log.composeAndLog(space, spaceLength, key, val, newVal, typeOrigNew, obj.composedPath);
 
             } else {
@@ -235,13 +232,13 @@ function getLogger(valueChecker, helper, options, optionsApp) {
               }
             }
 
-            if (_optsTesting.showAllNewVals) {              // show on 3rd column
+            if (_o.testing.showAllNewVals) {                // show on 3rd column
               const startSpace = $log.composeLogLine(space, '', '', 'ALL').split('ALL')[0];
               const info = {
                 path: obj.composedPath,
                 values: $log.getVal.getPaths()[obj.composedPath],
               };
-              console.log(_optsTesting.keepDataTypes ? startSpace : startSpace.slice(1), ['ALL NEW VALS', info]);
+              console.log(_o.testing.keepDataTypes ? startSpace : startSpace.slice(1), ['ALL NEW VALS', info]);
             }
           });
         },

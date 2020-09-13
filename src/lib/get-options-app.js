@@ -39,6 +39,7 @@ function getOptionsApp(valueChecker, helper, bindCtx) {
     array: '[,]',
   };
 
+  _o.testing = {}; // takes in testing options (if any) from user options, used by $log lib
   _o.temp = {};
 
   return _o;
