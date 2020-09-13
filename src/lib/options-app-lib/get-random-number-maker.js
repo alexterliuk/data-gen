@@ -25,7 +25,7 @@ function getRandomNumberMaker(valueChecker, optionsApp) {
     };
 
     if (opt.min || opt.max) {
-      return +((_o.$getRandom.number(opt.min, opt.max)).toFixed(opt.digitsAfterFloatingPoint));
+      return +((_o.getRandomNumber(opt.min, opt.max)).toFixed(opt.digitsAfterFloatingPoint));
     }
 
     return 0;

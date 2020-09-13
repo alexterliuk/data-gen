@@ -28,7 +28,6 @@ function getRandomNameMaker(valueChecker, helper, optionsApp) {
    *     - apply capitalizing options if specified
    */
   function makeRandomName(option) {
-    console.log('makeRandomName is called\n_v:', _v);
     const alphabet = (_v.isString(option.data.alphabet) && option.data.alphabet) || _o.alphabet;
     const allNames = _v.isObject(option.data.allNames) && option.data.allNames;
     let compoundName = '';
@@ -66,7 +65,7 @@ function getRandomNameMaker(valueChecker, helper, optionsApp) {
         let oneName = '', minLength, maxLength;
 
         if (data.minLength > data.maxLength) {
-          _o.$notifyOn.randomName_minBiggerThanMax(option, key);
+          _o.notifyOn.randomName_minBiggerThanMax(option, key);
           return '';
 
         } else {
@@ -88,7 +87,7 @@ function getRandomNameMaker(valueChecker, helper, optionsApp) {
           maxLength = maxLength > 100 ? 100 : maxLength;
           minLength = maxLength === 100 ? maxLength - 15 : minLength;
 
-          let nameLength = _o.$getRandom.number(minLength, maxLength);
+          let nameLength = _o.getRandomNumber(minLength, maxLength);
           nameLength = Math.floor(Math.random() * 100) % 2 ? Math.ceil(nameLength) : Math.floor(nameLength);
 
           for (let y = 0; y < nameLength; y++) {

@@ -99,7 +99,7 @@ function getRandomDateTimeMaker(valueChecker, helper, optionsApp) {
      *   @param {string} specName - e.g. 'months'
      */
     function getValsThroughValidation(cont, specName) {
-      const informNotValidVals = _o.$notifyOn.randomDatetime_notValidVals;
+      const informNotValidVals = _o.notifyOn.randomDatetime_notValidVals;
       const container = _h.getNotEmptyContainer(cont, 'array');
 
       if (!cont || _v.isArray(cont) && !cont.length) return false;

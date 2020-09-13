@@ -43,12 +43,12 @@ function getRandomTextMaker(valueChecker, helper, optionsApp) {
      */
     function makeText(data, minLength, maxLength, option) {
       if (_v.isBoolean(minLength) || _v.isBoolean(maxLength)) {
-        _o.$notifyOn.randomText_notValidMinOrMax(option);
+        _o.notifyOn.randomText_notValidMinOrMax(option);
         return '';
       }
 
       if (minLength > maxLength) {
-        _o.$notifyOn.randomText_minBiggerThanMax(option);
+        _o.notifyOn.randomText_minBiggerThanMax(option);
         return '';
       }
 
