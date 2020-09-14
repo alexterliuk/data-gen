@@ -15,7 +15,7 @@ function getTest(valueChecker, optionsApp) {
   /**
    * Switch on testing mode and invoke make. This will log steps of building data process while make is doing its job.
    *   @param {object|array} srcData
-   *   @param {object} optionsMake - data from .testing will be passed to optionsApp.testing
+   *   @param {object} optionsMake - data from optionsMake.testing will be passed to optionsApp.testing
    */
   function test(srcData, optionsMake) {
     const optsMake = optionsMake;
