@@ -42,7 +42,7 @@ function getTestValueChecker(valueChecker) {
       msg2: 'Testing $v.getPositiveIntegerOrZero.',
       call: { by: _v.getPositiveIntegerOrZero } };
 
-    return logBuiltIn(count, params, 'test$v');
+    return logBuiltIn(count, params, 'testValueChecker');
   }
 }
 
