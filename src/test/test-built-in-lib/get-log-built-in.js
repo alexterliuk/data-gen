@@ -15,7 +15,7 @@ function getLogBuiltIn(valueChecker) {
    *   @param {string} callerName
    *   @param {object} count - { ofParamsCalls: 0 }, used for logging ordinal number of each logic block tested
    * Each object inside params represents testing spec and must have - msg1, call.
-   * Other props are optional (msg2, callingWithInfo, vals).
+   * Other props are optional (msg2, callingWithInfo, hook, vals).
    *   e.g. {
    *          msg1: <string>,
    *          ?msg2: <string>,
@@ -24,7 +24,7 @@ function getLogBuiltIn(valueChecker) {
    *            args: <array> with args one of which is '_currVal_' - placeholder to be replaced by currVal inside makeCall
    *          },
    *          ?callingWithInfo: <string>,
-   *          ?hookBeforeLoggingResult: <function> to call before logging result of logBuiltIn
+   *          ?hook: <function> to call before logging result of logBuiltIn
    *          ?vals: <array>,
    *        }
    */
