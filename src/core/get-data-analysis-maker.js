@@ -5,15 +5,16 @@
 function getDataAnalysisMaker(valueChecker) {
   const logErr = this.makeRed ? str => console.log(this.makeRed(str)) : console.error;
   const _v = valueChecker;
+  const buildData = this.buildData;
 
   return makeDataAnalysis;
 
   /**
    * Check incoming data and invoke analysis process.
    *   @param {object|array} src
-   *   @param {object} options
+   *   @param {object} optionsMake - options passed to DataGen.make
    */
-  function makeDataAnalysis(src, options) {
+  function makeDataAnalysis(src, optionsMake) {
     const target = []; // will collect data analysis
     let currentLevel = 0;
     let nextLevelExist = true;
@@ -31,9 +32,7 @@ function getDataAnalysisMaker(valueChecker) {
       } else {
         //sourceAnalysis = target;
         //console.log('sourceAnalysis[0] path data:', sourceAnalysis[0].composedPath, sourceAnalysis[0].pathSegments);
-
-        // TODO: buildData is not in scope
-        return buildData(target, options); // startAnalysis - analyzeOneLevel loop complete, start building new data
+        return buildData(target, optionsMake); // startAnalysis - analyzeOneLevel loop complete, start building new data
       }
     }
 
