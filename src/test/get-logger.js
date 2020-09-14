@@ -160,7 +160,7 @@ function getLogger(valueChecker, helper, optionsApp) {
       const arrSymb = _o.charSymbols.array;
       const objSymb = _o.charSymbols.object;
       const strSymb = _o.charSymbols.string;
-      const spaceLength = _v.getPositiveIntegerOrZero(_o.testing.maxSpaceLength) || 30;
+      const spaceLength = _v.getPositiveIntegerOrZero(_o.testing.maxSpaceLength) || this.testingDataMode.opts.maxSpaceLength;
       const space = Array(spaceLength + 1).fill(' ').join(''); // space.length is +1 bigger, so that max space between columns
                                                                // can be === spaceLength, otherwise max space is spaceLength - 1
       const columnsNames = $log.composeLogLine(space, 'KEY', 'VALUE ORIG', 'VALUE NEW', 'TYPE ORIG - NEW', 'PATH');
@@ -257,6 +257,7 @@ function getLogger(valueChecker, helper, optionsApp) {
     clearState: () => {
       if (!this.testingDataMode.activated) return;
       this.testingDataMode.activated = false;
+      _o.testing = {};
       $log.getVal.clearPaths();
     },
   }; // end of $log
