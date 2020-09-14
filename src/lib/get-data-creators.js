@@ -20,7 +20,7 @@ function getDataCreators(valueChecker, optionsApp) {
     // option must be applied only to the data of corresponding type
     const correspondingTypes = option && option.type === el.type;
     if (option && !correspondingTypes) {
-      _o.$notifyOn.notCorrespondingTypes(option, el.type);
+      _o.notifyOn.notCorrespondingTypes(option, el.type);
     }
 
     const newData = [];
@@ -71,49 +71,49 @@ function getDataCreators(valueChecker, optionsApp) {
    */
   function createDataAccTo(option, type, options) {
     if (!_v.isObject(option)) {
-      _o.$notifyOn.optionNotObject(option);
-      return _o.$applyDefaultOption(type);
+      _o.notifyOn.optionNotObject(option);
+      return _o.applyDefaultOption(type);
     }
 
     if (!option.name) {
-      _o.$notifyOn.optionHasNoName(option);
-      return _o.$applyDefaultOption(type);
+      _o.notifyOn.optionHasNoName(option);
+      return _o.applyDefaultOption(type);
     }
 
-    if (!_o.$make[option.name] && !(options.lib || {})[option.name]) {
-      _o.$notifyOn.optionNotFound(option);
-      return _o.$applyDefaultOption(type);
+    if (!_o[option.name] && !(options.lib || {})[option.name]) {
+      _o.notifyOn.optionNotFound(option);
+      return _o.applyDefaultOption(type);
     }
 
-    const funcIn_o = _o.$make[option.name];
+    const funcIn_o = _o[option.name];
     const funcInLib = options.lib && options.lib[option.name]; // TODO: maybe - (options.lib && options.lib[option.name]) || {}
 
     if (funcIn_o && !option.data) {
-      _o.$notifyOn.optionNotComplete(option);
-      return _o.$applyDefaultOption(type);
+      _o.notifyOn.optionNotComplete(option);
+      return _o.applyDefaultOption(type);
     }
 
     if (funcInLib) {
       if (!options.lib || !_v.isObject(options.lib)) {
-        _o.$notifyOn.libNotFoundOrNotObject();
-        return _o.$applyDefaultOption(type);
+        _o.notifyOn.libNotFoundOrNotObject();
+        return _o.applyDefaultOption(type);
       }
 
       if (!_v.isObject(funcInLib)) {
-        _o.$notifyOn.optionNotObject(funcInLib);
-        return _o.$applyDefaultOption(type);
+        _o.notifyOn.optionNotObject(funcInLib);
+        return _o.applyDefaultOption(type);
       }
 
       if (!funcInLib.make || !funcInLib.data) {
-        _o.$notifyOn.libOptionNotComplete(option);
-        return _o.$applyDefaultOption(type);
+        _o.notifyOn.libOptionNotComplete(option);
+        return _o.applyDefaultOption(type);
       }
     }
 
     return funcIn_o ? funcIn_o(option, options)
           /* (1) */ : _v.isFunction(funcInLib.make) ? funcInLib.make(funcInLib.data)
-          /* (2) */ : _v.isFunction(_o.$make[funcInLib.make]) ? _o.$make[funcInLib.make](funcInLib, options)
-                    : (_o.$notifyOn.optionNotFoundOrLibFuncNotFunc(option, funcInLib), _o.$applyDefaultOption(type));
+          /* (2) */ : _v.isFunction(_o[funcInLib.make]) ? _o[funcInLib.make](funcInLib, options)
+                    : (_o.notifyOn.optionNotFoundOrLibFuncNotFunc(option, funcInLib), _o.applyDefaultOption(type));
 
     /* (1) user can put a function to 'make' key of lib's option,
            and it'll be called with given data by 'data' key in that option */
