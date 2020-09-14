@@ -13,7 +13,7 @@ function getNumberRandomizer(valueChecker) {
    *   @returns {number} - floating number from min to max (excluding min and max), or 0.
    */
   function getRandomNumberInRange(num1, num2) {
-    if (_v.isNumber(num1, num2)) return 0;
+    if (!_v.isNumber(num1, num2)) return 0;
 
     let min = Math.min(num1, num2), max = min === num1 ? num2 : num1;
     let range = max - min;
