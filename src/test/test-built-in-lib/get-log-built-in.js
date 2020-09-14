@@ -4,6 +4,7 @@
  */
 function getLogBuiltIn(valueChecker) {
   const logErr = this.makeRed ? str => console.log(this.makeRed(str)) : console.error;
+  const make = this.make;
   const _v = valueChecker;
 
   return logBuiltIn;
@@ -62,10 +63,14 @@ function getLogBuiltIn(valueChecker) {
                                              .concat(_v.isArray(val) ? [val] : val)
                                              .concat(p.call.args.slice(placeholderIdx + 1))
                                 : [val];
-                                                                        // param.call.args can have up to 5 arguments
-          const result = _v.isObject(p.call) && _v.isFunction(p.call.by) ? p.call.by(upd[0], upd[1], upd[2], upd[3], upd[4])
-                                                                         : makeData(upd[0], upd[1], upd[2], upd[3], upd[4]);
-                                                                         // TODO: fix makeData
+
+          let result;
+          if (_v.isObject(p.call) && _v.isFunction(p.call.by)) {
+                               // param.call.args can have up to 5 arguments
+            result = p.call.by(upd[0], upd[1], upd[2], upd[3], upd[4]);
+          } else {
+            result = make(upd[0], upd[1], upd[2], upd[3], upd[4]);
+          }
 
           p.hook && _v.isFunction(p.hook) ? p.hook(result) : console.log(result);
         });
