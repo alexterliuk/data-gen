@@ -18,6 +18,7 @@ function getDataAnalysisMaker(valueChecker) {
     const target = []; // will collect data analysis
     let currentLevel = 0;
     let nextLevelExist = true;
+    let numberOfCalls = 0;
 
     return startAnalysis(target, src);
 
@@ -27,7 +28,8 @@ function getDataAnalysisMaker(valueChecker) {
      *   @param {array|object} [src]
      */
     function startAnalysis(target, src) {
-      if (nextLevelExist) {
+                            // prevent infinite loop if parent is nested inside its child
+      if (nextLevelExist && ++numberOfCalls <= 100) {
         return analyzeOneLevel(target, src);
       } else {
         //sourceAnalysis = target;
