@@ -3,6 +3,7 @@
  */
 function getHelper(valueChecker) {
   const logErr = this.makeRed ? str => console.log(this.makeRed(str)) : console.error;
+  const getRandomNumberInRange = this.getRandomNumberInRange;
   const _v = valueChecker;
 
   // $h is alias for helper
@@ -27,7 +28,7 @@ function getHelper(valueChecker) {
       return arr && arr.length ? arr[$h.getRandomFloor(0, arr.length)] : false;
     },
 
-    getRandomFloor: (start, end) => Math.floor($options.$getRandom.number(start, end)), // TODO: $options is not in scope
+    getRandomFloor: (start, end) => Math.floor(getRandomNumberInRange(start, end)),
 
     /**
      * Check whether container is array or object and not empty.
