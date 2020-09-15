@@ -1,5 +1,5 @@
 /**
- * Provider of make with bound context.
+ * Provider of make (core public method) with bound context.
  *   @param {object} valueChecker
  */
 function getMake(valueChecker) {
