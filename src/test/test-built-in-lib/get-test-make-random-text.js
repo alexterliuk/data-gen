@@ -4,6 +4,8 @@
 function getTestMakeRandomText() {
   const logBuiltIn = this.logBuiltIn;
 
+  return testMakeRandomText;
+
   /**
    * Test makeRandomText of optionsApp.
    *   @param {object} count - { ofParamsCalls: <number> },
@@ -145,8 +147,6 @@ function getTestMakeRandomText() {
       };
     }
   }
-
-  return testMakeRandomText;
 }
 
 module.exports = getTestMakeRandomText;
