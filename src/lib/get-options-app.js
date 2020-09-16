@@ -4,7 +4,7 @@ const getRandomTextMaker = require('./options-app-lib/get-random-text-maker');
 const getRandomNameMaker = require('./options-app-lib/get-random-name-maker');
 const getRandomDateTimeMaker = require('./options-app-lib/get-random-date-time-maker');
 const getNotifications = require('./options-app-lib/get-notifications');
-const { createDataOfType } = require('./get-data-creators');
+const { createDataOfType } = require('./get-data-creators')(); // invoke provider and get needed function
 
 /**
  * Provider of options used for creating data. Alias in app - optionsApp.
