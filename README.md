@@ -153,7 +153,7 @@ option.data for next two functions - makeRandomText, makeRandomName - has simila
 
 **makeRandomText**
 
-  - <*text-specs*>
+  - ...<*text-specs*>
   - startFromBeginning - `boolean` (slice from start of text sample)
 
 This function has a built-in dummy text sample from which random parts are being sliced to compose a new text within specified min/maxLength. If collection is provided, built-in text sample is ignored and a new text is created from randomly picked strings inside the collection.
