@@ -145,7 +145,7 @@ There are 4 built-in functions which randomize values. Below are settings for th
   - max - `number`
   - digitsAfterFloatingPoint - `number`
 
-Thus, you can set a range within which a new number will be randomly created, and whether it should be integer or float.
+Thus, you can set a range within which a new number will be randomly created, and whether it should be integer or float. If you give *min*, you should also give *max* and vice versa, otherwise 0 is returned. If *min* > *max*, values are automatically swapped, so *min* becomes *max* and *max* becomes *min*.
 
 ---------- text-specs ----------
 
@@ -155,14 +155,14 @@ option.data for next two functions - makeRandomText, makeRandomName - has simila
 
   - minLength - `number`
   - maxLength - `number`
-  - capitalizeFirstLetter - `boolean`
+  - capitalizeFirstLetter - `boolean` (true by default)
   - capitalizeAllLetters - `boolean`
   - collection - `array<strings>` (make text from given texts; if present, no other prop of text-specs is checked, because they aren't needed)
 
 **makeRandomText**
 
   - ...<*text-specs*>
-  - startFromBeginning - `boolean` (slice from start of text sample)
+  - startFromBeginning - `boolean` (slice from start of text sample, false by default)
 
 This function has a built-in dummy text sample from which random parts are being sliced to compose a new text within specified min/maxLength. If collection is provided, built-in text sample is ignored and a new text is created from randomly picked strings inside the collection.
 
@@ -189,6 +189,4 @@ If you want more freedom in customizing each name of a compound name, you don't 
 
 This function creates datetime string of `YYYY-MM-DDThh:mm:ss` format. Each `array` in option.data holds desired `numbers` which should be used when constructing a datetime. Assume you want to get a datetime with a date to be 17 or 21. You specify *dates:[17, 21]* and get back a datetime with one of those two dates and random other segments. If no options.data given, datetime string will be completely random.
 
-
-
-TODO: add default values for option.data.props, indicate what is required
+TODO: add examples
