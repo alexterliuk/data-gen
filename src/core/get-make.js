@@ -21,15 +21,15 @@ function getMake(valueChecker) {
     if (!obj && !arr) {
       const msg = 'Source data must be object or array.';
       makeRed ? console.log(makeRed(msg)) : console.error(msg);
-      return;
+      return [];
     }
 
-    if (obj && !Object.keys(srcData).length) return {};
+    if (obj && !Object.keys(srcData).length) return [];
 
     if (arr && !srcData.length) return [];
 
     if (!(_v.isObject(optionsMake) && _v.getPositiveIntegerOrZero(optionsMake.quantity) > 0)) {
-      return obj ? {} : arr ? [] : undefined;
+      return [];
     }
 
     return makeDataAnalysis(srcData, optionsMake);
