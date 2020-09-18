@@ -129,4 +129,47 @@ Each option inside options.byPath is `object` which has such structure.
 | path | `string` | path where the value in original data is located |
 | data | `object` | settings for a function which is specified in *name* |
 
-TODO: settings for each built-in randomizing function
+There are 4 built-in functions which randomize values. Below are settings for them which you place inside option.data.
+
+**makeRandomNumber**
+
+  - min - `number`
+  - max - `number`
+  - digitsAfterFloatingPoint - `number`
+
+Thus, you can set a range within which a new number will be randomly created, and whether it should be integer or float.
+
+---------- text-specs ----------
+
+option.data for next two functions - makeRandomText, makeRandomName - has similar structure which is aggregated into text-specs.
+
+<*text-specs*> - `object`
+
+  - minLength - `number`
+  - maxLength - `number`
+  - capitalizeFirstLetter - `boolean`
+  - capitalizeAllLetters - `boolean`
+  - collection - `array<strings>` (make text from given texts; if present, no other prop of text-specs is checked, because they aren't needed)
+
+**makeRandomText**
+
+  - <*text-specs*>
+  - startFromBeginning - `boolean` (slice from start of text sample)
+
+This function has a built-in dummy text sample from which random parts are being sliced to compose a new text within specified min/maxLength. If collection is provided, built-in text sample is ignored and a new text is created from randomly picked strings inside the collection.
+
+**makeRandomName**
+
+  - alphabet - `string` (from which to slice chars randomly; if omitted English is used)
+  - allNames - `object`
+    - ...<*text-specs*>
+    - namesInCompoundName - `number`
+  - name1, name2 etc. - <*text-specs*>
+
+If option.data has allNames, name1, name2 etc. are not checked. By namesInCompoundName you can specify how many names a full name should consist of. For example, if you want the name to have 3 names inside, you set *namesInCompoundName: 3* and provide a collection *['John', 'Lo', 'Brown']*, from which names are picked randomly (so, the full name might form as 'John Lo Brown' or 'Lo John Brown' or other combination). It there's no collection, 'Arwq Lkwpoar W' might form as a full name with length of each name to be within min/maxLength range.
+
+If you want more freedom in customizing each name of a compound name, you don't need allNames. Instead you provide nameN specs, where N is `number`. The desired quantity of names is taken from counting nameN properties inside option.data. For example, you want that first name be 'John' or 'Laura', second - any, third - 'Brown'. So, you add name1 with a collection *['John', 'Laura']*, name2 with *minLength: 1* and *maxLength: 10*, name3 with a collection *[Brown]*. The result will be 'Laura Trk Brown' or 'John Usdrtwfg Brown' etc. 
+
+TODO: makeRandomDateTime
+
+TODO: add default values for option.data.props, indicate what is required
