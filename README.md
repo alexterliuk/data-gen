@@ -83,6 +83,14 @@ There are three public methods of DataGen.
 
 It makes *n* instances of data where *n* is `number` specified in options.quantity. Created data is returned inside `array`. If no options.quantity given, it returns empty `array`.
 
+If no pathSyntax is given, default format for specifying path in option.path is - `x.someProp[0]`.\
+If *singleQuotes: true* is set, path format is - `x.someProp['0']`.\
+If *doubleQuotes: true* - `x.someProp["0"]`.\
+If *squareBraced: true, singleQuotes: true* - `['x']['someProp']['0']`.\
+If *squareBraced: true, doubleQuotes: true* - `["x"]["someProp"]["0"]`.
+
+There's no need to add absolute path, relative is enough - `someProp[0]` or even `[0]` will work. But if your data has many similar paths you can expand your path, adding parent segments, until option.path becomes unique.
+
 **test**
 
 `DataGen.test(data, options)`
