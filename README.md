@@ -170,6 +170,17 @@ If option.data has allNames, then name1, name2 etc. are not checked. By namesInC
 
 If you want more freedom in customizing each name of a compound name, you don't need allNames. Instead you provide nameN specs, where N is `number`. The desired quantity of names is taken from counting nameN properties inside option.data. For example, you want that first name be 'John' or 'Laura', second - any, third - 'Brown'. So, you add name1 with a collection *['John', 'Laura']*, name2 with *minLength: 1* and *maxLength: 10*, name3 with a collection *[Brown]*. The result will be 'Laura Trk Brown' or 'John Usdrtwfg Brown' etc. 
 
-TODO: makeRandomDateTime
+**makeRandomDateTime**
+
+  - years - `array<numbers>` (if omitted, range 0-9999 is used)
+  - months - `array<numbers>`
+  - dates - `array<numbers>`
+  - hours - `array<numbers>`
+  - minutes - `array<numbers>`
+  - seconds - `array<numbers>`
+
+This function creates datetime string of `YYYY-MM-DDThh:mm:ss` format. Each `array` in option.data holds desired `numbers` which should be used when constructing a datetime. Assume you want to get a datetime with a date to be 17 or 21. You specify *dates:[17, 21]* and get back a datetime with one of those two dates and random other segments. If no options.data given, datetime string will be completely random.
+
+
 
 TODO: add default values for option.data.props, indicate what is required
