@@ -33,6 +33,13 @@ function getDataBuilder(valueChecker, logger, optionsApp) {
       optsMake = { quantity: 0, byPath: [] };
     }
 
+    // add pathSyntax settings given by user
+    if (_v.isObject(optsMake.pathSyntax)) {
+      Object.entries(optsMake.pathSyntax).forEach(entry => {
+        _o.pathSyntax[entry[0]] = entry[1];
+      });
+    }
+
     let byPathOptions = optsMake && _v.isArray(optsMake.byPath) ? optsMake.byPath.slice() : [];
     byPathOptions.forEach((opt, idx) => { opt.index = idx; });
 
