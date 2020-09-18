@@ -81,7 +81,7 @@ There are three public methods of DataGen.
       - doubleQuotes - `boolean` (if true - usages["0"])
       - squareBraced - `boolean` (if true - \['usages']['0'] or \["usages"]["0"])
 
-It will make *n* instances where *n* is `number` specified in options.quantity.
+It makes *n* instances of data where *n* is `number` specified in options.quantity. Created data is returned inside `array`. If no options.quantity given, it returns empty `array`.
 
 **test**
 
