@@ -100,8 +100,7 @@ function getDataBuilder(valueChecker, logger, optionsApp) {
         const val = el.hasOwnProperty('propertyValue') ? el.propertyValue : el.indexValue;
         const nextLevel = elementsByLevelAndId['level' + (level + 1)];
 
-        // Object.keys added, so that no crash on makeTestData({ uuu: [] }), or makeTestData({ uuu: {} })
-        if ((el.type === 'object' || el.type === 'array') && Object.keys(elementsByLevelAndId).length) {
+        if (el.type === 'object' || el.type === 'array') {
           const updatedDataCollector = [];
 
           el.pathsToNewElements.forEach(newElem => {
