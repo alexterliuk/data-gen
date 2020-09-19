@@ -178,7 +178,6 @@ function getLogger(valueChecker, helper, optionsApp) {
         srcAnalysis: 'Data analysis complete:',
 
         elementsByCurrentLevel: () => {
-          console.log('_o.testing:', _o.testing);
           if (_o.testing.keepDataTypes && !_o.temp.elementsByCurrentLevel_NB1logged) {
             console.warn('NB: objects, arrays and long strings are wrapped in arrays for neat table view of logging data.');
             _o.temp.elementsByCurrentLevel_NB1logged = true;
