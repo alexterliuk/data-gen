@@ -170,9 +170,12 @@ This function has a built-in dummy text sample from which random parts are being
 
   - alphabet - `string` (from which to slice chars randomly; if omitted English is used)
   - allNames - `object`
-    - ...<*text-specs*>
+    - alphabet
     - namesInCompoundName - `number`
-  - name1, name2 etc. - <*text-specs*>
+    - ...<*text-specs*>
+  - name1, name2 etc. - `objects`
+    - alphabet
+    - ...<*text-specs*>
 
 If option.data has allNames, then name1, name2 etc. are not checked. By namesInCompoundName you can specify how many names a full name should consist of. For example, if you want the name to have 3 names inside, you set *namesInCompoundName: 3* and provide a collection *['John', 'Lo', 'Brown']*, from which names are picked randomly (so, the full name might form as 'John Lo Brown' or 'Lo John Brown' or other combination). It there's no collection, 'Arwq Lkwpoar W' might form as a full name with length of each name to be within min/maxLength range.
 
