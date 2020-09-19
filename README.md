@@ -367,7 +367,7 @@ fs.writeFileSync(
 // [{"dt":"2020-06-14T20:58:47"},{"dt":"2020-08-30T19:59:04"},{"dt":"2020-12-18T07:58:22"}]
 ```
 
-##### Copy complex data
+**Copy complex data**
 
 ```
 const category = {
