@@ -191,7 +191,7 @@ This function creates datetime string of `YYYY-MM-DDThh:mm:ss` format. Each `arr
 
 ## Examples
 
-###### Make random names, numbers
+##### Make random names, numbers
 
 ```
 const user = { name: 'John', age: 30 };
@@ -226,7 +226,7 @@ DataGen.make(user, options);
 // ]
 ```
 
-###### Get names from a collection
+##### Get names from a collection
 
 ```
 const user = { name: 'John', age: 30 };
@@ -254,7 +254,7 @@ DataGen.make(user, options);
 // ]
 ```
 
-###### Make different numbers
+##### Make different numbers
 
 ```
 const pos = { x: 4, y: 17, z: 93 };
@@ -290,7 +290,7 @@ DataGen.make(pos, options);
 // ]
 ```
 
-###### Make random text
+##### Make random text
 
 ```
 const items = [{ id: '1o9p', description: 'BW item' }, { id: 'sl4q', description: 'Color item' }];
@@ -336,7 +336,7 @@ DataGen.make(items, options);
 // ]
 ```
 
-###### Make random datetime
+##### Make random datetime
 
 ```
 const options = { quantity: 3 };
@@ -367,7 +367,7 @@ fs.writeFileSync(
 // [{"dt":"2020-06-14T20:58:47"},{"dt":"2020-08-30T19:59:04"},{"dt":"2020-12-18T07:58:22"}]
 ```
 
-###### Copy complex data
+##### Copy complex data
 
 ```
 const category = {
