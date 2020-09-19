@@ -189,4 +189,268 @@ If you want more freedom in customizing each name of a compound name, you don't 
 
 This function creates datetime string of `YYYY-MM-DDThh:mm:ss` format. Each `array` in option.data holds desired `numbers` which should be used when constructing a datetime. Assume you want to get a datetime with a date to be 17 or 21. You specify *dates:[17, 21]* and get back a datetime with one of those two dates and random other segments. If no options.data given, datetime string will be completely random.
 
-TODO: add examples
+## Examples
+
+###### Make random names, numbers
+
+```
+const user = { name: 'John', age: 30 };
+
+const options = { quantity: 3 };
+options.byPath = [
+  {
+    type: 'string',
+    name: 'makeRandomName',
+    path: 'name',
+    data: {
+      name1: { minLength: 8, maxLength: 14 },
+    },
+  },
+  {
+    type: 'number',
+    name: 'makeRandomNumber',
+    path: 'age',
+    data: {
+      min: 0,
+      max: 122,
+    },
+  },
+];
+
+DataGen.make(user, options);
+
+// [
+//   { name: 'Phdyskth', age: 110 },
+//   { name: 'Mkbolfsvti', age: 56 },
+//   { name: 'Iffxfdwah', age: 54 },
+// ]
+```
+
+###### Get names from a collection
+
+```
+const user = { name: 'John', age: 30 };
+
+const options = { quantity: 3 };
+options.byPath = [
+  {
+    type: 'string',
+    name: 'makeRandomName',
+    path: 'name',
+    data: {
+      name1: { collection: ['John', 'Kevin', 'Julia', 'Sophie'] },
+      name2: { collection: ['fon', 'der'] },
+      name3: { collection: ['Keflavik', 'Maroovski', 'Smith'] },
+    },
+  },
+];
+
+DataGen.make(user, options);
+
+// [
+//   { name: 'Julia fon Smith', age: 0 },
+//   { name: 'Sophie der Keflavik', age: 0 },
+//   { name: 'Kevin fon Keflavik', age: 0 },
+// ]
+```
+
+###### Make different numbers
+
+```
+const pos = { x: 4, y: 17, z: 93 };
+
+const options = { quantity: 3 };
+options.byPath = [
+  {
+    type: 'number',
+    name: 'makeRandomNumber',
+    path: 'x',
+    data: { min: 4, max: 4 },
+  },
+  {
+    type: 'number',
+    name: 'makeRandomNumber',
+    path: 'y',
+    data: { min: -100, max: 50 },
+  },
+  {
+    type: 'number',
+    name: 'makeRandomNumber',
+    path: 'z',
+    data: { min: 100, max: 1000, digitsAfterFloatingPoint: 3 },
+  },
+];
+
+DataGen.make(pos, options);
+
+// [
+//   { x: 4, y: -3, z: 107.241 },
+//   { x: 4, y: 14, z: 525.998 },
+//   { x: 4, y: -55, z: 807.082 },
+// ]
+```
+
+###### Make random text
+
+```
+const items = [{ id: '1o9p', description: 'BW item' }, { id: 'sl4q', description: 'Color item' }];
+
+const options = { quantity: 3 };
+options.byPath = [
+  {
+    type: 'string',
+    name: 'makeRandomText',
+    path: '[0].description',
+    data: { minLength: 5, maxLength: 30 },
+  },
+  {
+    type: 'string',
+    name: 'makeRandomText',
+    path: '[1].description',
+    data: { collection: ['Awesome description', 'Impressions you might want to try', 'Driver'] },
+  },
+  {
+    type: 'string',
+    name: 'makeRandomName',
+    path: 'id',
+    data: { alphabet: 'abcdefghijkl1234567890',
+            name1: { minLength: 4, maxLength: 4, capitalizeFirstLetter: false } },
+  },
+];
+
+DataGen.make(items, options);
+
+// [
+//   [
+//     { id: '4807', description: 'M dolore eu fu' },
+//     { id: 'ig54', description: 'Impressions you might want to try' },
+//   ],
+//   [
+//     { id: 'g3hf', description: 'Risus vulputate vehic' },
+//     { id: 'f5e5', description: 'Awesome description' },
+//   ],
+//   [
+//     { id: 'l0ci', description: 'C fermentum. Pellentesque m' },
+//     { id: '5eaj', description: 'Awesome description' },
+//   ],
+// ]
+```
+
+###### Make random datetime
+
+```
+const options = { quantity: 3 };
+options.byPath = [
+  {
+    type: 'string',
+    name: 'makeRandomDateTime',
+    path: 'dt',
+    data: { years: [2020], minutes: [58, 59] },
+  },
+];
+
+DataGen.make({ dt: '' }, options);
+
+// [
+//   { dt: '2020-07-13T20:59:36' },
+//   { dt: '2020-09-01T16:58:31' },
+//   { dt: '2020-06-18T07:58:23' },
+// ]
+
+// - - - - - - - - - - - - - - - - -
+
+fs.writeFileSync(
+  'new-data.json',
+  JSON.stringify(DataGen.make({ dt: '' }, options))
+);
+
+// [{"dt":"2020-06-14T20:58:47"},{"dt":"2020-08-30T19:59:04"},{"dt":"2020-12-18T07:58:22"}]
+```
+
+###### Copy complex data
+
+```
+const category = {
+  id: 1523,
+  name: '',
+  description: '',
+  date: '',
+  inUse: false,
+  items: [
+    {
+      itemName: 'Activation Matrix 1784 DBRS',
+      points: [14, -0.5498763145698756, 0],
+    },
+  ],
+  records: [
+    [258369, -123968, 700203],
+    [-4.25698, 8.01703, 3.15331],
+    [0, 1, -1, -1],
+  ],
+};
+
+const optsData = [
+  ['number', 'number', 'id', { min: 1, max: 9999 }],
+  ['string', 'name', 'name', { allNames: { minLength: 5, maxLength: 15, namesInCompoundName: 3 } }],
+  ['string', 'text', 'description', { minLength: 100, maxLength: 200, startFromBeginning: true }],
+  ['string', 'dateTime', 'date', { years: [2020], months: [9], minutes: [0, 30], seconds: [0] }],
+  ['number', 'number', 'points[0]', { min: 10, max: 99 }],
+  ['number', 'number', 'points[1]', { min: -10, max: 0, digitsAfterFloatingPoint: 12 }],
+  ['number', 'number', 'points[2]', { min: 0, max: 0 }],
+  ['number', 'number', 'records[0][0]', { min: 100000, max: 500000 }],
+  ['number', 'number', 'records[0][1]', { min: -500000, max: -100000 }],
+  ['number', 'number', 'records[0][2]', { min: 500000, max: 999999 }],
+  ['number', 'number', 'records[1][0]', { min: -10, max: 10, digitsAfterFloatingPoint: 5 }],
+  ['number', 'number', 'records[1][1]', { min: -10, max: 10, digitsAfterFloatingPoint: 5 }],
+  ['number', 'number', 'records[1][2]', { min: -10, max: 10, digitsAfterFloatingPoint: 5 }],
+  ['number', 'number', 'records[2][0]', { min: -1, max: 1 }],
+  ['number', 'number', 'records[2][1]', { min: -1, max: 1 }],
+  ['number', 'number', 'records[2][2]', { min: -1, max: 1 }],
+  ['string', 'name', 'itemName',
+    {
+      name1: { collection: ['Activation', 'Hydration', 'Filtration'] },
+      name2: { collection: ['Matrix'] },
+      name3: { alphabet: '0123456789', minLength: 4, maxLength: 4 },
+      name4: { minLength: 4, maxLength: 4, capitalizeAllLetters: true },
+    },
+  ],
+];
+
+function makeOption(type, funcNameEnding, path, data) {
+  const f = 'makeRandom' + funcNameEnding[0].toUpperCase() + funcNameEnding.slice(1);
+  return { type, name: f, path, data };
+}
+
+function makeOptions(arr, qty) {
+  return {
+    quantity: qty,
+    byPath: arr.map(d => makeOption.call({}, ...d)),
+  };
+}
+
+const options = makeOptions(optsData, 3);
+
+fs.writeFileSync(
+  'new-data.json',
+  JSON.stringify(DataGen.make(category, options))
+);
+
+// [{
+//   "date": "2020-09-25T02:00:00",
+//   "description": "Lorem ipsum dolor sit amet, consectetur...",
+//   "id": 6884,
+//   "inUse": true,
+//   "items": [{
+//     "itemName": "Hydration Matrix 7829 VDAS",
+//     "points": [26, -2.884532310826, 0]
+//   }],
+//   "name": "Kubpsodfrpbpv Kbuaxeihyedves Yihktzdelc",
+//   "records": [
+//     [200062, -242021, 730448],
+//     [-5.75639, -2.23289, 8.99108],
+//     [0, -1, 1, 0]
+//   ]
+// },
+// // ...  
+// ]
+```
