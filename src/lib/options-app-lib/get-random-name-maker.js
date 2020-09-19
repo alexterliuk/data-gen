@@ -22,6 +22,7 @@ function getRandomNameMaker(valueChecker, helper, optionsApp) {
    * If no allNames, function looks for name1, name2 etc. properties and works with them.
    * Steps inside allNames || name1 etc.:
    *     - if collection - make compoundName from names inside collection
+   *     - use alphabet specified for allNames || name1 etc., or from option.data, or optionsApp's alphabet
    *     - if minLength || maxLength - make names of random length within min-max range, make compoundName from names
    *       (qty of names inside compoundName is defined by namesInCompoundName (if allNames),
    *        or by counting name1, name2 etc. properties inside option.data)
@@ -34,16 +35,19 @@ function getRandomNameMaker(valueChecker, helper, optionsApp) {
 
     if (allNames) {
       const namesInCompoundName = _v.getPositiveIntegerOrZero(allNames.namesInCompoundName);
+      const _alphabet = option.data.allNames.alphabet || alphabet;
 
       for (let i = 1; i <= namesInCompoundName; i++) {
-        compoundName += makeName(allNames, 'allNames', alphabet, option);
+        compoundName += makeName(allNames, 'allNames', _alphabet, option);
       }
     }
 
     if (!allNames) {
       Object.keys(option.data).forEach(key => {
         if (key.slice(0, 4) === 'name' && !_v.isNaN(Number(key.slice(4)))) {
-          compoundName += makeName(option.data[key], key, alphabet, option);
+
+          const _alphabet = option.data[key].alphabet || alphabet;
+          compoundName += makeName(option.data[key], key, _alphabet, option);
         }
       });
     }
