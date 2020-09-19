@@ -115,7 +115,6 @@ function getDataBuilder(valueChecker, logger, optionsApp) {
             (elementsByLevelAndId['level' + (level + 1)][id] || []).forEach(nextLevelEl => {
               const nextId = nextLevelEl.propertyName || nextLevelEl.index;
               const nextVal = el.type === 'object' ? nextLevelEl.propertyValue : nextLevelEl.indexValue;
-              nextLevelEl.pathSegments = [];
 
               // handling NaN case (NaN === NaN is false, thus they can't be successfully compared in expression before ||)
               if (
