@@ -1,13 +1,24 @@
 {
   "name": "data-gen",
   "version": "0.0.0",
-  "description": "Data generator",
+  "description": "Data generator. Give data, get back N instances with values - default or randomized according to options.",
   "main": "index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/alexterliuk/data-gen.git"
   },
-  "author": "Alex Terliuk",
+  "author": {
+    "name": "Alex Terliuk",
+    "email": "alex.terliuk@gmail.com"
+  },
   "license": "MIT",
-  "homepage": "https://github.com/alexterliuk/data-gen"
+  "homepage": "https://github.com/alexterliuk/data-gen",
+  "keywords": [
+    "data-generator",
+    "datagen",
+    "data-gen",
+    "randomizer",
+    "randomization",
+    "copy"
+  ]
 }
