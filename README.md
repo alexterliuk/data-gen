@@ -370,7 +370,7 @@ fs.writeFileSync(
 // [{"dt":"2020-06-14T20:58:47"},{"dt":"2020-08-30T19:59:04"},{"dt":"2020-12-18T07:58:22"}]
 ```
 
-**Copy complex data**
+**Make complex data**
 
 ```
 const category = {
@@ -431,12 +431,15 @@ function makeOptions(arr, qty) {
   };
 }
 
-const options = makeOptions(optsData, 3);
+const options = makeOptions(optsData, 100);
 
 fs.writeFileSync(
   'new-data.json',
   JSON.stringify(DataGen.make(category, options))
 );
+
+// or if you want to log data creation process in the terminal, use test method
+// DataGen.test(category, { testing: { keepDataTypes: true, showAllNewVals: true }, ...options });
 
 // [{
 //   "date": "2020-09-25T02:00:00",
