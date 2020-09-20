@@ -1,7 +1,7 @@
 /**
  * DataGen - data generator. Give data, get back N instances with values - default or randomized according to options.
  * https://github.com/alexterliuk/data-gen
- * This version does not include testBuiltIn functionality.
+ * This version includes testBuiltIn functionality.
  * v1.0.0
  */
 (function() {
@@ -1232,11 +1232,902 @@
 
         return make(srcData, optsMake);
       }
-// ======== END public methods ============================================================================================
+
+      // lib for testBuiltIn
+      const lib = {
+        DataGenCalling: testDataGenCalling,
+        valueChecker: testValueChecker,
+        helper: testHelper,
+        makeRandomNumber: testMakeRandomNumber,
+        makeRandomName: testMakeRandomName,
+        makeRandomText: testMakeRandomText,
+        makeRandomDateTime: testMakeRandomDateTime,
+      };
+
+      /**
+       * Log result of testing built-in logic.
+       *   @param {string} entities - names of functions or procedures to test
+       *                              if omitted, invoke all functions from lib one by one
+       */
+      function testBuiltIn(...entities) {
+        // count how many params of testBuiltIn's lib's functions have been processed
+        let count = { ofParamsCalls: 0 };
+        console.log('\nTESTING SWITCHED ON. MODE: Testing built-in logic.\n\n');
+
+        if (entities.length) {
+          entities.forEach(entityName => {
+            if ($v.isString(entityName) && $v.isFunction(lib[entityName])) {
+              lib[entityName](count, opt);
+
+            } else {
+              console.warn('UNKNOWN ENTITY: ', entityName, '. TESTING OF IT IS NOT POSSIBLE.');
+            }
+          });
+
+        } else {
+          Object.keys(lib).forEach(entityName => { lib[entityName](count, opt); });
+        }
+
+        /**
+         * Take option, wrap in library and expose modifying methods.
+         *   @param {object} [option]
+         */
+        function opt(option) {
+          const lib = {
+            assign: function (optionDataKey, ...vals) { // optionDataKey is string or false
+              let idx = 0;
+
+              while (idx < vals.length) {
+                if (optionDataKey) {
+                  if (!$v.isObject(this.option.data[optionDataKey])) {
+                    this.option.data[optionDataKey] = {};
+                  }
+
+                  this.option.data[optionDataKey][vals[idx]] = vals[idx + 1];
+
+                } else {
+                  this.option.data[vals[idx]] = vals[idx + 1];
+                }
+                idx += 2;
+              }
+
+              return this;
+            },
+
+            delete: function (optionDataKey, ...keys) { // optionDataKey is string or false
+              if (optionDataKey) {
+                keys.length ? keys.forEach(key => delete this.option.data[optionDataKey][key])
+                  : delete this.option.data[optionDataKey];
+
+              } else { // if optionDataKey === false
+                keys.forEach(key => delete this.option.data[key]);
+              }
+
+              return this;
+            },
+
+            obtain: function() { return this.option; },
+          };
+
+          lib.option = $v.isObject(option) && $v.isObject(option.data) ? option : { data: {} };
+
+          return lib;
+        }
+      }
+// ======== END public methods ========================================================================================
+
+// ======== testBuiltIn's lib =========================================================================================
+      /**
+       * Take params from testBuiltIn's lib's function and trigger iteration over these params with logging logic.
+       *   @param {array} params - filled with objects
+       *   @param {string} callerName
+       *   @param {object} count - { ofParamsCalls: 0 }, used for logging ordinal number of each logic block tested
+       * Each object inside params represents testing spec and must have - msg1, call.
+       * Other props are optional (msg2, callingWithInfo, hook, vals).
+       *   e.g. {
+       *          msg1: <string>,
+       *          ?msg2: <string>,
+       *          call: {
+       *            by: <function>,
+       *            args: <array> with args one of which is '_currVal_' - placeholder to be replaced by currVal inside makeCall
+       *          },
+       *          ?callingWithInfo: <string>,
+       *          ?hook: <function> to call before logging result of logBuiltIn
+       *          ?vals: <array>,
+       *        }
+       */
+      function logBuiltIn(count, params, callerName) {
+        const vals = [0, 1, 0n, 1n, NaN, Infinity, undefined, null, '', 'just string',
+                      {}, [], [14, 16], true, false, /ff/, [/ff/, 10], {x: 'y', c: /ff/}];
+        const dashes = '============';
+        const head = {
+          line: '_____________________________________',
+          info: 'CALLING WITH:',
+        };
+
+        params.forEach((p, idx) => {
+          count.ofParamsCalls += 1;
+
+          if (!p.call) p.call = {};
+
+          const paramArgs = p.call.hasOwnProperty('args');
+          const placeholderIdx = (p.call.args || []).findIndex(arg => arg === '_currVal_');
+
+          console.log('%c' + makeMessage(count.ofParamsCalls, p.msg1, p.msg2), 'background:lightyellow');
+
+          if (paramArgs && placeholderIdx < 0) {
+            console.error('[logBuiltIn]: No \'_currVal_\' placeholder in call.args',
+                           p.call.args,
+                          `of param by index ${idx} in ${callerName}. Param set has not been tested.`);
+
+          } else {
+            (p.vals || vals).forEach(val => {
+              console.log(head.line);
+              console.log(p.callingWithInfo || head.info, $v.isString(val) && !val.length ? '/*empty string*/' : val);
+
+              // upd - updated paramArgs
+              const upd = paramArgs ? p.call.args.slice(0, placeholderIdx)
+                                                 .concat($v.isArray(val) ? [val] : val)
+                                                 .concat(p.call.args.slice(placeholderIdx + 1))
+                                    : [val];
+
+              let result;
+              if ($v.isObject(p.call) && $v.isFunction(p.call.by)) {
+                                   // param.call.args can have up to 5 arguments
+                result = p.call.by(upd[0], upd[1], upd[2], upd[3], upd[4]);
+              } else {
+                result = make(upd[0], upd[1], upd[2], upd[3], upd[4]);
+              }
+
+              p.hook && $v.isFunction(p.hook) ? p.hook(result) : console.log(result);
+            });
+          }
+        });
+
+        function makeMessage (num, str1, str2) {
+          const message = `\n\n${num}) ${dashes} ${str1} ${dashes}`;
+          return !str2 ? message : `${message}\n${num < 10 ? '   ' : '    '}${dashes} ${str2}`;
+        }
+      }
+
+      /**
+       * Test how DataGen's make and test methods handle being called with proper and improper arguments.
+       *   @param {object} count - { ofParamsCalls: <number> },
+       */
+      function testDataGenCalling(count) {
+        const params = [];
+        const intro = 'TESTING OF dataGen CALLING WITH';
+        const msg2 = 'It should log an error in all cases when srcData is not object, or array.';
+
+        params[0] = { msg1: `${intro} DIFFERENT srcData WITHOUT ANY OPTIONS`,
+          msg2,
+          callingWithInfo: 'CALLING WITH srcData:' };
+
+        params[1] = { msg1: `${intro} DIFFERENT srcData WITHOUT ANY OPTIONS AND VIA CALLING test function`,
+          msg2,
+          callingWithInfo: 'CALLING WITH srcData:',
+          call: { by: test } };
+
+        params[2] = { msg1: `${intro} DIFFERENT srcData AND WITH options TO BE { quantity: 3 }`,
+          msg2,
+          callingWithInfo: 'CALLING WITH srcData:',
+          call: { args: ['_currVal_', { quantity: 3 }] } };
+
+        params[3] = { msg1: `${intro} DIFFERENT srcData AND WITH options TO BE { quantity: 3 } AND VIA CALLING test function`,
+          msg2,
+          callingWithInfo: 'CALLING WITH srcData:',
+          call: { by: test, args: ['_currVal_', { quantity: 3 }] } };
+
+        params[4] = { msg1: `${intro} srcData TO BE { x: \'y\'} AND WITH NOT VALID options`,
+          msg2: 'It should return empty type of srcData. ' +
+                'It should log no errors because analyzing and building triggered only if options.quantity > 0.',
+          callingWithInfo: 'CALLING WITH OPTIONS:',
+          call: { args: [{ x: 'y' }, '_currVal_'] } };
+
+        return logBuiltIn(count, params, 'testDataGenCalling');
+      }
+
+      /**
+       * Test some functions of the value checker library.
+       *   @param {object} count - { ofParamsCalls: <number> },
+       */
+      function testValueChecker(count) {
+        const params = [];
+        const msg1 = 'TESTING SOME FUNCTIONS OF VALUE CHECKER - $v.';
+
+        params[0] = { msg1,
+          msg2: 'Testing $v.isObject. It should return <false> if value is null, array, regexp or any other type.',
+          call: { by: $v.isObject } };
+
+        params[1] = { msg1,
+          msg2: 'Testing $v.isRegExp.',
+          call: { by: $v.isRegExp } };
+
+        params[2] = { msg1,
+          msg2: 'Testing $v.isError.',
+          call: { by: $v.isError },
+          vals: [null, {}, [], undefined, Error(), Error('some text'), 'just string'] };
+
+        params[3] = { msg1,
+          msg2: 'Testing $v.isInfinity.',
+          call: { by: $v.isInfinity },
+          vals: [undefined, NaN, 0, 1, true, false, Infinity, 1.2355, -7.2565, 1n, 0n] };
+
+        params[4] = { msg1,
+          msg2: 'Testing $v.getType.',
+          call: { by: $v.getType } };
+
+        params[5] = { msg1,
+          msg2: 'Testing $v.getPositiveIntegerOrZero.',
+          call: { by: $v.getPositiveIntegerOrZero } };
+
+        return logBuiltIn(count, params, 'testValueChecker');
+      }
+
+      /**
+       * Test some functions of the helper library.
+       *   @param {object} count - { ofParamsCalls: <number> },
+       */
+      function testHelper(count) {
+        const params = [];
+        const msg1 = 'TESTING SOME FUNCTIONS OF HELPER - $h.';
+        const vals = [15, 31, {x: 'y'}, [44, null], 56, 'just string', false, function getDummy(){}, 99];
+
+        params[0] = { msg1,
+          msg2: 'Testing $h.getRandomElementFromArray.',
+          call: { by: $h.getRandomElementFromArray, args: ['_currVal_', 'vals'] },
+          vals: Array(30).fill({ vals }) };
+
+        params[1] = { msg1,
+          msg2: 'Testing $h.getRandomFloor. It first calls randomizing function from $options which returns floating number, and then rounds it down to the nearest integer.',
+          call: { by: $h.getRandomFloor, args: [0, '_currVal_'] },
+          vals: Array(10).fill(100) };
+
+        params[2] = { msg1,
+          msg2: 'Testing $h.getNotEmptyContainer with 2nd param (type) to be array. It should return <false> if empty container.',
+          call: { by: $h.getNotEmptyContainer, args: ['_currVal_', 'array'] },
+          vals: Array(5).fill([14, true]).concat(Array(5).fill([])) };
+
+        params[3] = { msg1,
+          msg2: 'Testing $h.getNotEmptyContainer with 2nd param (type) to be object. It should return <false> if empty container.',
+          call: { by: $h.getNotEmptyContainer, args: ['_currVal_', 'object'] },
+          vals: Array(5).fill({ x: 'y' }).concat(Array(5).fill({})) };
+
+        return logBuiltIn(count, params, 'testHelper');
+      }
+
+      /**
+       * Test makeRandomNumber of optionsApp.
+       *   @param {object} count - { ofParamsCalls: <number> },
+       *   @param {function} opt
+       */
+      function testMakeRandomNumber(count, opt) {
+        console.log(
+          '\n\n%c ============ TESTING OF optionsApp\'s makeRandomNumber ======================================================================================== \n' +
+          '  This function creates random number within a specified range given in option.data.                                                             \n' +
+          '  If min > max, it swaps them - takes min as max and max as min.                                                                                 \n' +
+          '  It returns created number or 0 (in case if min or max is not number).                                                                          \n',
+          'background:lightyellow'
+        );
+        const params = [];
+
+        params[0] = { msg1: 'min - 0, max - 1.',
+          call: { args: [{ someNumber: 0 }, '_currVal_'] },
+          vals: [{
+            quantity: 30,
+            byPath: [
+              opt(getOption()).assign(false, 'min', 0, 'max', 1)
+                              .obtain()
+            ],
+          }],
+        };
+
+        params[1] = { msg1: 'min - 1, max - 1.',
+          call: { args: [{ someNumber: 0 }, '_currVal_'] },
+          vals: [{
+            quantity: 30,
+            byPath: [
+              opt(getOption()).assign(false, 'min', 1, 'max', 1)
+                              .obtain()
+            ],
+          }],
+        };
+
+        params[2] = { msg1: 'min - -17, max - 0.',
+          call: { args: [{ someNumber: 0 }, '_currVal_'] },
+          vals: [{
+            quantity: 30,
+            byPath: [
+              opt(getOption()).assign(false, 'min', -17, 'max', 0)
+                              .obtain()
+            ],
+          }],
+        };
+
+        params[3] = { msg1: 'min - 10, max - 0.',
+          call: { args: [{ someNumber: 0 }, '_currVal_'] },
+          vals: [{
+            quantity: 30,
+            byPath: [
+              opt(getOption()).assign(false, 'min', 10, 'max', 0)
+                              .obtain()
+            ],
+          }],
+        };
+
+        params[4] = { msg1: 'min - NaN, max - 1.',
+          call: { args: [{ someNumber: 0 }, '_currVal_'] },
+          vals: [{
+            quantity: 30,
+            byPath: [
+              opt(getOption()).assign(false, 'min', NaN, 'max', 1)
+                              .obtain()
+            ],
+          }],
+        };
+
+        params[5] = { msg1: 'min - undefined, max - Infinity.',
+          call: { args: [{ someNumber: 0 }, '_currVal_'] },
+          vals: [{
+            quantity: 30,
+            byPath: [
+              opt(getOption()).assign(false, 'min', undefined, 'max', Infinity)
+                              .obtain()
+            ],
+          }],
+        };
+
+        params[6] = { msg1: 'min - -1000, max - 1000, digitsAfterFloatingPoint - 3.',
+          msg2: 'Some created numbers may have 2 or less digits after floating point. ' +
+            'It happens when created number e.g. 50.0001, which cannot be shown as 50.000 - it\'s just 50. Same for 70.130 etc.',
+          call: { args: [{ someNumber: 0 }, '_currVal_'] },
+          vals: [{
+            quantity: 100,
+            byPath: [
+              opt(getOption()).assign(false, 'min', -1000, 'max', 1000, 'digitsAfterFloatingPoint', 3)
+                              .obtain()
+            ],
+          }],
+        };
+
+        return logBuiltIn(count, params, 'testMakeRandomNumber');
+
+        function getOption() {
+          return { type: 'number', name: 'makeRandomNumber', path: 'someNumber', data: {} };
+        }
+      }
+
+      /**
+       * Test makeRandomName of optionsApp.
+       *   @param {object} count - { ofParamsCalls: <number> },
+       *   @param {function} opt
+       */
+      function testMakeRandomName(count, opt) {
+        console.log(
+          '\n\n%c ============ TESTING OF optionsApp\'s makeRandomName ========================================================================================== \n' +
+          '  This function creates:                                                                                                                         \n' +
+          '    - one-word name, or compound name                                                                                                            \n' +
+          '    - from collection <array of strings>, or alphabet <string>                                                                                   \n' +
+          '    - of random length within specified range (from 0 to 100 chars)                                                                              \n' +
+          '    - uppercased, lowercased or first-letter uppercased                                                                                          \n' +
+          '  Below are steps of function\'s processing (called with srcData: { userName: \'John Doe\' }) and testing of different min-max values.             ',
+          'background:lightyellow'
+        );
+        const params = [];
+
+        params[0] = { msg1: 'If allNames, work only with its content.',
+          msg2: 'If collection, take data from it, do not check other props of allNames.',
+          call: { args: [{ userName: 'John Doe' }, '_currVal_'] },
+          callingWithInfo: 'namesInCompoundName === 5:',
+          vals: [{
+            quantity: 3,
+            byPath: [
+              opt(getOption()).obtain()
+            ],
+          }],
+        };
+
+        params[1] = { msg1: 'If allNames...',
+          msg2: 'If collection...',
+          call: { args: [{ userName: 'John Doe' }, '_currVal_'] },
+          callingWithInfo: 'namesInCompoundName === 0:',
+          vals: [{
+            quantity: 3,
+            byPath: [
+              opt(getOption()).assign('allNames', 'namesInCompoundName', 0)
+                              .obtain()
+            ],
+          }],
+        };
+
+        params[2] = { msg1: 'If allNames...',
+          msg2: 'If collection...',
+          call: { args: [{ userName: 'John Doe' }, '_currVal_'] },
+          callingWithInfo: 'namesInCompoundName === -3:',
+          vals: [{
+            quantity: 3,
+            byPath: [
+              opt(getOption()).assign('allNames', 'namesInCompoundName', -3)
+                              .obtain()
+            ],
+          }],
+        };
+
+        params[3] = { msg1: 'If allNames...',
+          msg2: 'If collection...',
+          call: { args: [{ userName: 'John Doe' }, '_currVal_'] },
+          callingWithInfo: 'namesInCompoundName === Infinity:',
+          vals: [{
+            quantity: 3,
+            byPath: [
+              opt(getOption()).assign('allNames', 'namesInCompoundName', Infinity)
+                              .obtain()
+            ],
+          }],
+        };
+
+        params[4] = { msg1: 'If allNames...',
+          msg2: '!collection.',
+          call: { args: [{ userName: 'John Doe' }, '_currVal_'] },
+          callingWithInfo: 'namesInCompoundName === 5; length from 0 to 5::',
+          vals: [{
+            quantity: 3,
+            byPath: [
+              opt(getOption()).delete('allNames', 'collection')
+                              .obtain()
+            ],
+          }],
+        };
+
+        params[5] = { msg1: 'If allNames...',
+          msg2: '!collection.',
+          call: { args: [{ userName: 'John Doe' }, '_currVal_'] },
+          callingWithInfo: 'namesInCompoundName === 5; length from 5 to 20:',
+          vals: [{
+            quantity: 3,
+            byPath: [
+              opt(getOption()).assign('allNames', 'minLength', 5, 'maxLength', 20)
+                              .delete('allNames', 'collection', 'capitalizeAllLetters')
+                              .obtain()
+            ],
+          }],
+        };
+
+        params[6] = { msg1: 'If !allNames, work with name1, name2 etc.',
+          msg2: 'e.g. in created compound name \'John Lloyd Smith\' name1 is \'John\' etc.',
+          call: { args: [{ userName: 'John Doe' }, '_currVal_'] },
+          callingWithInfo: 'name1 - collection;\n' +
+            'name2 - collection;\n' +
+            'name3 - !collection, length from 5 to 10:',
+          vals: [{
+            quantity: 3,
+            byPath: [
+              opt(getOption()).delete('allNames')
+                              .obtain()
+            ],
+          }],
+        };
+
+        params[7] = { msg1: 'If !allNames...',
+          msg2: 'e.g. if name1.collection - take random name from it for \'name1\', ' +
+            'if !name2.collection - create \'name2\' within specified range of minLength - maxLength.',
+          call: { args: [{ userName: 'John Doe' }, '_currVal_'] },
+          callingWithInfo: 'name1 - !collection;\n' +
+            'name2 - !collection, length from 1 to 8;\n' +
+            'name3 - !collection, !minLength, length to 20:',
+          vals: [{
+            quantity: 3,
+            byPath: [
+              opt(getOption()).delete('allNames')
+                              .delete('name1', 'collection')
+                              .delete('name2', 'collection')
+                              .delete('name3', 'minLength')
+                              .assign('name2', 'minLength', 1, 'maxLength', 8)
+                              .assign('name3', 'maxLength', 20)
+                              .obtain()
+            ],
+          }],
+        };
+
+        params[8] = { msg1: 'If !allNames...',
+          msg2: 'If no maxLength, name\'s length is up to +15 chars compared to minLength, but does not exceed 100.',
+          call: { args: [{ userName: 'John Doe' }, '_currVal_'] },
+          callingWithInfo: 'name1 - !collection, length from 5;\n' +
+            'name2 - !collection, length from 10;\n' +
+            'name3 - !collection, length from 15:',
+          vals: [{
+            quantity: 3,
+            byPath: [
+              opt(getOption()).delete('allNames')
+                              .delete('name1', 'collection', 'maxLength')
+                              .delete('name2', 'collection', 'maxLength')
+                              .delete('name3', 'maxLength')
+                              .assign('name2', 'minLength', 10)
+                              .assign('name3', 'minLength', 15)
+                              .obtain()
+            ],
+          }],
+        };
+
+        params[9] = { msg1: 'If !allNames...',
+          msg2: 'If no minLength, name\'s length is up to -15 chars compared to maxLength, but not less than 0.',
+          call: { args: [{ userName: 'John Doe' }, '_currVal_'] },
+          callingWithInfo: 'name1 - !collection, length to 5;\n' +
+            'name2 - !collection, length to 15;\n' +
+            'name3 - !collection, length to 30:',
+          vals: [{
+            quantity: 3,
+            byPath: [
+              opt(getOption()).delete('allNames')
+                              .delete('name1', 'collection', 'minLength', 'capitalizeFirstLetter')
+                              .delete('name2', 'collection', 'minLength')
+                              .delete('name3', 'minLength')
+                              .assign('name1', 'capitalizeAllLetters', true, 'maxLength', 5)
+                              .assign('name2', 'maxLength', 15)
+                              .assign('name3', 'maxLength', 30)
+                              .obtain()
+            ],
+          }],
+        };
+
+        params[10] = { msg1: 'If no alphabet specified, English alphabet is used.',
+          msg2: 'Generally, alphabet is not restricted to be only letters, ' +
+            'it can be any chars concatenated into a single string - e.g. \'_^&?y94fse#\'.',
+          call: { args: [{ userName: 'John Doe' }, '_currVal_'] },
+          callingWithInfo: '!alphabet; \nallNames - !collection, length from 5 to 20:',
+          vals: [{
+            quantity: 3,
+            byPath: [
+              opt(getOption()).delete('allNames', 'collection', 'capitalizeAllLetters')
+                              .assign('allNames', 'minLength', 5, 'maxLength', 20)
+                              .delete('alphabet')
+                              .obtain()
+            ],
+          }],
+        };
+
+        (() => {
+          const minMax = [
+            0, 0,
+            1, 1,
+            0, 1,
+            1, 0,
+            -1, 0,
+            0, -1,
+            -78, 51,
+            78, -14,
+            78, 333,
+            214, 280,
+            null, {},
+            NaN, Infinity,
+            Infinity, Infinity,
+            [], 'fsdf',
+            false, false,
+            true, true,
+            0n, 1n,
+            -0n, -1n,
+            undefined, undefined,
+            undefined, 2144,
+            2144, undefined,
+            -2145, undefined,
+            undefined, -9856
+          ];
+
+          let idx = 0;
+          while (idx < minMax.length) {
+            params[params.length] = {
+              msg1: 'Testing different values of minLength and maxLength.',
+              msg2: 'Max length of each name in compound name - 100 chars.',
+              call: { args: [{ userName: 'John Doe' }, '_currVal_'] },
+              callingWithInfo: `each name of compound name is within: minLength - ${minMax[idx]}, maxLength - ${minMax[idx + 1]}:`,
+              vals: [{
+                quantity: 3,
+                byPath: [
+                  opt(getOption()).delete('allNames', 'collection', 'capitalizeAllLetters')
+                                  .delete('name1')
+                                  .delete('name2')
+                                  .delete('name3')
+                                  .assign('allNames', 'namesInCompoundName', 3, 'minLength', minMax[idx], 'maxLength', minMax[idx + 1])
+                                  .obtain()
+                ],
+              }],
+              hook: result => {
+                const data = result.map(r => {
+                  const names = r.userName.split(' ').map(n => n.length);
+                  let i = 0;
+                  while (i < names.length) { r[`_name${i + 1}Length`] = names[i]; i += 1; }
+                  r._compoundNameLengthWithSpaces = r.userName.length;
+                  return r;
+                });
+                console.log(data);
+              },
+            };
+            idx += 2;
+          }
+        })();
+
+        return logBuiltIn(count, params, 'testMakeRandomName');
+
+        function getOption() {
+          return {
+            type: 'string', name: 'makeRandomName', path: 'userName',
+            data: {
+              alphabet: 'abcdef',
+              allNames: {
+                minLength: 0,
+                maxLength: 5,
+                namesInCompoundName: 5,
+                capitalizeAllLetters: true,
+                collection: ['Tilda', 'Laura', 'Kevin'],
+              },
+              name1: {
+                minLength: 5,
+                maxLength: 10,
+                capitalizeFirstLetter: false,
+                collection: ['Tilda', 'Laura', 'Kevin'],
+              },
+              name2: {
+                minLength: 5,
+                maxLength: 10,
+                collection: ['Clementine', 'Christopher', 'Quentin'],
+              },
+              name3: {
+                minLength: 5,
+                maxLength: 10,
+              },
+            },
+          };
+        }
+      }
+
+      /**
+       * Test makeRandomText of optionsApp.
+       *   @param {object} count - { ofParamsCalls: <number> },
+       *   @param {function} opt
+       */
+      function testMakeRandomText(count, opt) {
+        console.log(
+          '\n\n%c ============ TESTING OF optionsApp\'s makeRandomText ========================================================================================== \n' +
+          '  This function creates text of random length within specified min-max length range (including spaces).                                          \n' +
+          '  If option.data.collection, it doesn\'t check any other prop of option.data - it just takes a value from collection to be a text.                \n' +
+          '  If there is no collection, it slices text chunks from textSample given by user, or from built-in textSample.                                   \n' +
+          '  Below is illustration of how the function works with different arguments. It is called with srcData: { description: \'Some text\' }).            ',
+          'background:lightyellow'
+        );
+        const textSample = 'A software design pattern is a general, reusable solution to a commonly occurring problem ' +
+                           'within a given context in software design. Design patterns are formalized best practices.';
+        const params = [];
+
+        params[0] = { msg1: 'If collection, take data from it, do not check other props of option.data.',
+          call: { args: [{ description: 'Some text' }, '_currVal_'] },
+          vals: [{
+            quantity: 5,
+            byPath: [
+              opt(getOption()).obtain()
+            ],
+          }],
+        };
+
+        params[1] = { msg1: 'If no collection, create text within min-max length range - from 0 to 70.',
+          call: { args: [{ description: 'Some text' }, '_currVal_'] },
+          vals: [{
+            quantity: 5,
+            byPath: [
+              opt(getOption()).delete('collection')
+                              .obtain()
+            ],
+          }],
+          hook,
+        };
+
+        params[2] = { msg1: 'If no collection, create text within min-max length range - from 0 to 70.',
+          msg2: 'startFromBeginning - <true> (text should start from the beginning of textSample)',
+          call: { args: [{ description: 'Some text' }, '_currVal_'] },
+          vals: [{
+            quantity: 5,
+            byPath: [
+              opt(getOption()).delete('collection')
+                              .assign(false, 'startFromBeginning', true)
+                              .obtain()
+            ],
+          }],
+          hook,
+        };
+
+        params[3] = { msg1: 'If textSample, slice random text chunks from it within length range. ' +
+                            'If !textSample, text chunks are sliced from built-in textSample.',
+          call: { args: [{ description: 'Some text' }, '_currVal_'] },
+          vals: [{
+            quantity: 5,
+            byPath: [
+              opt(getOption()).delete('collection')
+                              .assign(false, 'startFromBeginning', true, 'textSample', textSample)
+                              .obtain()
+            ],
+          }],
+          hook,
+        };
+
+        params[4] = { msg1: 'If !startFromBeginning --> If alphabet, slice a char from it to put as first char if needed ' +
+                                                                      '(e.g. first char in text is space or apostrophe). ' +
+                            'If !alphabet, use for this purpose built-in alphabet (English).',
+          msg2: 'alphabet - \'xyz\'',
+          call: { args: [{ description: 'Some text' }, '_currVal_'] },
+          vals: [{
+            quantity: 5,
+            byPath: [
+              opt(getOption()).delete('collection')
+                              .assign(false, 'alphabet', 'xyz')
+                              .obtain()
+            ],
+          }],
+          hook,
+        };
+
+        params[5] = { msg1: 'Length - from 0 to 500.',
+          msg2: 'capitalizeFirstLetter - <false>',
+          call: { args: [{ description: 'Some text' }, '_currVal_'] },
+          vals: [{
+            quantity: 20,
+            byPath: [
+              opt(getOption()).delete('collection')
+                              .assign(false, 'minLength', 0, 'maxLength', 500, 'capitalizeFirstLetter', false)
+                              .obtain()
+            ],
+          }],
+          hook,
+        };
+
+        params[6] = { msg1: 'Length - from 0 to 500.',
+          msg2: 'capitalizeAllLetters - <true>',
+          call: { args: [{ description: 'Some text' }, '_currVal_'] },
+          vals: [{
+            quantity: 20,
+            byPath: [
+              opt(getOption()).delete('collection')
+                              .assign(false, 'minLength', 0, 'maxLength', 500, 'capitalizeAllLetters', true)
+                              .obtain()
+            ],
+          }],
+          hook,
+        };
+
+        return logBuiltIn(count, params, 'testMakeRandomText');
+
+        function hook(result) {
+          const data = result.map(r => { r._length = r.description.length; return r; });
+          console.log(data);
+        }
+
+        function getOption() {
+          return {
+            type: 'string', name: 'makeRandomText', path: 'description',
+            data: {
+              collection: [
+                'Once upon a time.',
+                'Terminator will come.',
+                'To be or not to be.',
+                'Sitting in a chair is nice business.',
+                'Daily coding.'
+              ],
+              minLength: 0,
+              maxLength: 70,
+              startFromBeginning: false,
+              // capitalizeAllLetters: true,
+              // capitalizeFirstLetter: false
+            },
+          };
+        }
+      }
+
+      /**
+       * Test makeRandomDateTime of optionsApp.
+       *   @param {object} count - { ofParamsCalls: <number> },
+       *   @param {function} opt
+       */
+      function testMakeRandomDateTime(count, opt) {
+        console.log(
+          '\n\n%c ============ TESTING OF optionsApp\'s makeRandomDateTime ====================================================================================== \n' +
+          '  This function creates datetime string (YYYY-MM-DDThh:mm:ss).                                                                                   \n' +
+          '  It is completely random or its segments (year, month etc.) are randomly selected from specified vals inside option.data.                       \n' +
+          '  Desired values for years, months, dates, hours, minutes, seconds can be defined in arrays with the same name.                                  \n' +
+          '  For instance, if option.data.months === [2, 9], datetime string will have month either February, or September.                                 ',
+          'background:lightyellow'
+        );
+        const params = [];
+
+        const vals = {
+          years:   [ [], [2016], [1983, 2017], [0],    [1000], [null]     ],
+          months:  [ [], [2],    [2, 5, 11],   [-2],   [14],   [true]     ],
+          dates:   [ [], [10],   [7, 27, 29],  [-3],   [35],   [false]    ],
+          hours:   [ [], [23],   [],           [-4],   [27],   [{}]       ],
+          minutes: [ [], [58],   [],           [-0],   [69],   ['1']      ],
+          seconds: [ [], [59],   [],           [-2],   [74],   [Infinity] ],
+        };
+
+        for (let i = 0; i < vals.years.length; i++) {
+          params[i] = {
+            msg1: 'option.data:',
+            msg2: `years: [${vals.years[i]}], ` +
+                  `months: [${vals.months[i]}], ` +
+                  `dates: [${vals.dates[i]}], ` +
+                  `hours: [${vals.hours[i]}], ` +
+                  `minutes: [${vals.minutes[i]}], ` +
+                  `seconds: [${vals.seconds[i]}]`,
+            call: { args: [{ date: '' }, '_currVal_'] },
+            vals: [{
+              quantity: 5,
+              byPath: [
+                opt(getOption()).assign(false,
+                                        'years', vals.years[i],
+                                        'months', vals.months[i],
+                                        'dates', vals.dates[i],
+                                        'hours', vals.hours[i],
+                                        'minutes', vals.minutes[i],
+                                        'seconds', vals.seconds[i])
+                                .obtain()
+              ],
+            }],
+          };
+        }
+
+        params[params.length] = {
+          msg1: 'If option.data has no values, datetime is created by default rules. ' +
+                'If e.g. option.data.months === undefined, default rules for a month are applied.',
+          msg2: 'Default rules: use any valid value for month, date, hour, minute, second; ' +
+                'for a year use range - from 1900 to current year.',
+          call: { args: [{ date: '' }, '_currVal_'] },
+          vals: [{
+            quantity: 5,
+            byPath: [
+              opt(getOption()).assign(false,
+                                      'years', undefined,
+                                      'months', null,
+                                      'dates', '',
+                                      'hours', true,
+                                      'minutes', /ff/,
+                                      'seconds', {})
+                              .obtain()
+            ],
+          }],
+        };
+
+        params[params.length] = {
+          msg1: 'Create 100 different datetime strings.',
+          msg2: 'years: [1951, 1990, 2015], ' +
+                'months: [2, 3, 11], ' +
+                'dates: [8, 9, 29], ' +
+                'hours: [0, 19, 23], ' +
+                'minutes: [36, 39, 59], ' +
+                'seconds: [0, 58, 59]',
+          call: { args: [{ date: '' }, '_currVal_'] },
+          vals: [{
+            quantity: 100,
+            byPath: [
+              opt(getOption()).assign(false,
+                                      'years', [1951, 1990, 2015],
+                                      'months', [2, 3, 11],
+                                      'dates', [8, 9, 29],
+                                      'hours', [0, 19, 23],
+                                      'minutes', [36, 39, 59],
+                                      'seconds', [0, 58, 59])
+                              .obtain()
+            ],
+          }],
+        };
+
+        return logBuiltIn(count, params, 'testMakeRandomDateTime');
+
+        function getOption() {
+          return { type: 'string', name: 'makeRandomDateTime', path: 'date', data: {} };
+        }
+      }
+// ======== END testBuiltIn's lib =====================================================================================
 
       return {
         make,
         test,
+        testBuiltIn,
       };
     } // end of DataGen
   }
