@@ -1,6 +1,6 @@
 {
   "name": "data-gen",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Data generator. Give data, get back N instances with values - default or randomized according to options.",
   "main": "index.js",
   "repository": {
