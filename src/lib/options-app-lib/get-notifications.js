@@ -29,8 +29,8 @@ function getNotifications(valueChecker, helper) {
 
     notCorrespondingTypes: (option, elType) => {
       logErr(_h.notifStart(option) + `Attempt to apply option to incompatible type of data.\n` +
-        `The option has type '${option.type}', but the data by the option's path is of type '${elType}'.`
-        + _h.notifToDefault());
+        `The option has type '${option.type}', but the data by the option's path is of type '${elType}'.` +
+        _h.notifToDefault());
     },
 
     libNotFoundOrNotObject: () => {
@@ -44,8 +44,8 @@ function getNotifications(valueChecker, helper) {
     },
 
     optionNotComplete: option => {
-      logErr(_h.notifStart(option) + `Option has no 'data' to work with and thus can't be applied.`
-        + _h.notifToDefault());
+      logErr(_h.notifStart(option) + `Option has no 'data' to work with and thus can't be applied.` +
+        _h.notifToDefault());
     },
 
     optionNotFoundOrLibFuncNotFunc: (option, funcInLib) => {
