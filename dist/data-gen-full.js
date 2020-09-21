@@ -1404,14 +1404,14 @@
        */
       function testDataGenCalling(count) {
         const params = [];
-        const intro = 'TESTING OF dataGen CALLING WITH';
-        const msg2 = 'It should log an error in all cases when srcData is not object, or array.';
+        const intro = 'TESTING OF DataGen CALLING WITH';
+        const msg2 = 'It should log an error in all cases when srcData is not object or array.';
 
-        params[0] = { msg1: `${intro} DIFFERENT srcData WITHOUT ANY OPTIONS`,
+        params[0] = { msg1: `${intro} DIFFERENT srcData WITHOUT options`,
           msg2,
           callingWithInfo: 'CALLING WITH srcData:' };
 
-        params[1] = { msg1: `${intro} DIFFERENT srcData WITHOUT ANY OPTIONS AND VIA CALLING test function`,
+        params[1] = { msg1: `${intro} DIFFERENT srcData WITHOUT options AND VIA CALLING test FUNCTION`,
           msg2,
           callingWithInfo: 'CALLING WITH srcData:',
           call: { by: test } };
@@ -1421,14 +1421,14 @@
           callingWithInfo: 'CALLING WITH srcData:',
           call: { args: ['_currVal_', { quantity: 3 }] } };
 
-        params[3] = { msg1: `${intro} DIFFERENT srcData AND WITH options TO BE { quantity: 3 } AND VIA CALLING test function`,
+        params[3] = { msg1: `${intro} DIFFERENT srcData AND WITH options TO BE { quantity: 3 } AND VIA CALLING test FUNCTION`,
           msg2,
           callingWithInfo: 'CALLING WITH srcData:',
           call: { by: test, args: ['_currVal_', { quantity: 3 }] } };
 
         params[4] = { msg1: `${intro} srcData TO BE { x: \'y\'} AND WITH NOT VALID options`,
-          msg2: 'It should return empty type of srcData. ' +
-                'It should log no errors because analyzing and building triggered only if options.quantity > 0.',
+          msg2: 'It should return empty array. ' +
+            'It should log no errors because analyzing and building triggered only if options.quantity > 0.',
           callingWithInfo: 'CALLING WITH OPTIONS:',
           call: { args: [{ x: 'y' }, '_currVal_'] } };
 
@@ -1494,12 +1494,12 @@
         params[2] = { msg1,
           msg2: 'Testing $h.getNotEmptyContainer with 2nd param (type) to be array. It should return <false> if empty container.',
           call: { by: $h.getNotEmptyContainer, args: ['_currVal_', 'array'] },
-          vals: Array(5).fill([14, true]).concat(Array(5).fill([])) };
+          vals: [[14, true], [false], []]};
 
         params[3] = { msg1,
           msg2: 'Testing $h.getNotEmptyContainer with 2nd param (type) to be object. It should return <false> if empty container.',
           call: { by: $h.getNotEmptyContainer, args: ['_currVal_', 'object'] },
-          vals: Array(5).fill({ x: 'y' }).concat(Array(5).fill({})) };
+          vals: [{ x: 'y' }, {}] };
 
         return logBuiltIn(count, params, 'testHelper');
       }

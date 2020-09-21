@@ -30,12 +30,12 @@ function getTestHelper(helper) {
     params[2] = { msg1,
       msg2: 'Testing $h.getNotEmptyContainer with 2nd param (type) to be array. It should return <false> if empty container.',
       call: { by: _h.getNotEmptyContainer, args: ['_currVal_', 'array'] },
-      vals: Array(5).fill([14, true]).concat(Array(5).fill([])) };
+      vals: [[14, true], [false], []]};
 
     params[3] = { msg1,
       msg2: 'Testing $h.getNotEmptyContainer with 2nd param (type) to be object. It should return <false> if empty container.',
       call: { by: _h.getNotEmptyContainer, args: ['_currVal_', 'object'] },
-      vals: Array(5).fill({ x: 'y' }).concat(Array(5).fill({})) };
+      vals: [{ x: 'y' }, {}] };
 
     return logBuiltIn(count, params, 'testHelper');
   }
