@@ -8,11 +8,13 @@ TODO
 
 ## About
 
-DataGen is a cloning utility which creates _n_ instances of original data. It takes in `object` or `array`, traverses over all nested data and returns `array` with desired quantity of instances which have the same structure but different values of the same type.
+DataGen is a cloning utility that creates _n_ instances of original data with the same or randomized values. It takes in `object` or `array`, traverses over all nested data and returns `array` with the desired quantity of instances that have the same structure. And what values created depends on the options you provided.
 
 For example, given an input `{ weather: 'sunny', temp: 30 }`, you can get back `[{ weather: 'rainy', temp: 17 }, { weather: 'foggy', temp: 3 }]` if you specify such options. If no options provided, you will get instances with default values `{ weather: '', temp 0 }`.
 
 Maximum nesting level is 100, below it data is not processed. The restriction is set to avoid infinite loop in case if some child has its parent nested deeper in the tree.
+
+**TL;DR** - see examples in the end of this file.
 
 ## Usage
 
