@@ -1,5 +1,5 @@
 {
-  "name": "data-gen",
+  "name": "@alexterliuk/data-gen",
   "version": "1.0.1",
   "description": "Data generator. Give data, get back N instances with values - default or randomized according to options.",
   "main": "index.js",
