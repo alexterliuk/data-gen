@@ -23,7 +23,7 @@ function getTestHelper(helper) {
       vals: Array(30).fill({ vals }) };
 
     params[1] = { msg1,
-      msg2: 'Testing $h.getRandomFloor. It first calls randomizing function from $options which returns floating number, and then rounds it down to the nearest integer.',
+      msg2: 'Testing $h.getRandomFloor. It first calls randomizing function from optionsApp which returns floating number, and then rounds it down to the nearest integer.',
       call: { by: _h.getRandomFloor, args: [0, '_currVal_'] },
       vals: Array(10).fill(100) };
 
