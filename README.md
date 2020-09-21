@@ -3,7 +3,7 @@
 ## Install
 
 ```
-TODO
+npm i @alexterliuk/data-gen
 ```
 
 ## About
@@ -19,6 +19,8 @@ Maximum nesting level is 100, below it data is not processed. The restriction is
 ## Usage
 
 ```
+const DataGen = require('@alexterliuk/data-gen');
+
 const task = {
   id: 1784,
   description: 'Write a novel',
