@@ -1322,19 +1322,27 @@
        *   @param {array} params - filled with objects
        *   @param {string} callerName
        *   @param {object} count - { ofParamsCalls: 0 }, used for logging ordinal number of each logic block tested
-       * Each object inside params represents testing spec and must have - msg1, call.
-       * Other props are optional (msg2, callingWithInfo, hook, vals).
-       *   e.g. {
-       *          msg1: <string>,
-       *          ?msg2: <string>,
-       *          call: {
-       *            by: <function>,
-       *            args: <array> with args one of which is '_currVal_' - placeholder to be replaced by currVal inside makeCall
-       *          },
-       *          ?callingWithInfo: <string>,
-       *          ?hook: <function> to call before logging result of logBuiltIn
-       *          ?vals: <array>,
-       *        }
+       * Each object inside params represents testing spec and must have - msg1, call.by.
+       * Other props are optional (msg2, call.args, callingWithInfo, hook, vals).
+       * Structure of a single param (P.):
+       *   {
+       *     msg1: <string>,
+       *     ?msg2: <string>,
+       *     call: {
+       *       by: <function>, - to be called with args which are formed from either of following:
+       *                           - P.call.args && P.vals
+       *                           - P.call.args && logBuiltIn's vals
+       *                           - logBuiltIn's vals
+       *       ?args: <array>, - includes args for P.call.by to be called with;
+       *                         one of the args must be '_currVal_' - it'll be replaced by P.vals' val || logBuiltIn's vals' val;
+       *                         there's a loop in logBuiltIn which takes a val, adds it instead of '_currVal_',
+       *                         and then calls P.call.by with just formed set of args;
+       *                         the loop goes over P.vals || logBuiltIn's vals
+       *     },
+       *     ?callingWithInfo: <string>,
+       *     ?hook: <function> to call before logging result of logBuiltIn
+       *     ?vals: <array>,
+       *   }
        */
       function logBuiltIn(count, params, callerName) {
         const vals = [0, 1, 0n, 1n, NaN, Infinity, undefined, null, '', 'just string',
@@ -1373,10 +1381,10 @@
 
               let result;
               if ($v.isObject(p.call) && $v.isFunction(p.call.by)) {
-                                   // param.call.args can have up to 5 arguments
+                                   // param.call.args may have up to 5 arguments
                 result = p.call.by(upd[0], upd[1], upd[2], upd[3], upd[4]);
               } else {
-                result = make(upd[0], upd[1], upd[2], upd[3], upd[4]);
+                result = make(upd[0], upd[1]); // make(srcData, optionsMake)
               }
 
               p.hook && $v.isFunction(p.hook) ? p.hook(result) : console.log(result);
