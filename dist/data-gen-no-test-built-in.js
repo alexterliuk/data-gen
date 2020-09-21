@@ -5,7 +5,7 @@
  * v1.0.0
  */
 (function() {
-  if (typeof window !== undefined && !window.DataGen) {
+  if (typeof window !== 'undefined' && !window.DataGen) {
     window.DataGen = DataGen();
 
     function DataGen() {
