@@ -87,7 +87,7 @@ function getLogger(valueChecker, helper, optionsApp) {
 
           } else if (_v.isRegExp(val) && val.source.length > spaceLength) {
             updatedSpace = space.slice(2 + typeInArrLength);
-            val = ['regexp', [val]]; let x = $o;
+            val = ['regexp', [val]]; let x = _o;
 
           } else {
             updatedSpace = space.slice(2, spaceLength - ('' + val).length + 1); // + 1 for slicing until and including the last char
