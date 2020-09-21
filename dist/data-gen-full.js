@@ -2,7 +2,7 @@
  * DataGen - data generator. Give data, get back N instances with values - default or randomized according to options.
  * https://github.com/alexterliuk/data-gen
  * This version includes testBuiltIn functionality.
- * v1.0.0
+ * v1.0.1
  */
 (function() {
   if (typeof window !== 'undefined' && !window.DataGen) {
