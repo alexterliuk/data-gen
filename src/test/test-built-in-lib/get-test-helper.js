@@ -23,19 +23,19 @@ function getTestHelper(helper) {
       vals: Array(30).fill({ vals }) };
 
     params[1] = { msg1,
-      msg2: 'Testing $h.getRandomFloor. It first calls randomizing function from $options which returns floating number, and then rounds it down to the nearest integer.',
+      msg2: 'Testing $h.getRandomFloor. It first calls randomizing function from optionsApp which returns floating number, and then rounds it down to the nearest integer.',
       call: { by: _h.getRandomFloor, args: [0, '_currVal_'] },
       vals: Array(10).fill(100) };
 
     params[2] = { msg1,
       msg2: 'Testing $h.getNotEmptyContainer with 2nd param (type) to be array. It should return <false> if empty container.',
       call: { by: _h.getNotEmptyContainer, args: ['_currVal_', 'array'] },
-      vals: Array(5).fill([14, true]).concat(Array(5).fill([])) };
+      vals: [[14, true], [false], []]};
 
     params[3] = { msg1,
       msg2: 'Testing $h.getNotEmptyContainer with 2nd param (type) to be object. It should return <false> if empty container.',
       call: { by: _h.getNotEmptyContainer, args: ['_currVal_', 'object'] },
-      vals: Array(5).fill({ x: 'y' }).concat(Array(5).fill({})) };
+      vals: [{ x: 'y' }, {}] };
 
     return logBuiltIn(count, params, 'testHelper');
   }

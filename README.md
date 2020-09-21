@@ -76,6 +76,8 @@ There are three public methods of DataGen.
   - data - `object | array`
   - options - `object`
     - quantity - `string` (if omitted, no data will be created, empty `[]` is returned)
+    - lib - `object` (where you put your own data creating functions, if any; see examples)
+    - byPath - `array` (see **Options** section below)
     - pathSyntax - `object`
       - singleQuotes - `boolean` (if true - usages[\'0'])
       - doubleQuotes - `boolean` (if true - usages["0"])
@@ -90,6 +92,8 @@ If *squareBraced: true, singleQuotes: true* - `['x']['someProp']['0']`.\
 If *squareBraced: true, doubleQuotes: true* - `["x"]["someProp"]["0"]`.
 
 There's no need to add absolute path, relative is enough - `someProp[0]` or even `[0]` will work. But if your data has many similar paths you can expand your path, adding parent segments, until option.path becomes unique.
+
+In options.lib you can add your own functions for creating data. This is convenient when you don't want to use built-in *makeRandomSmth* functions. For example, you can make *options.lib = { myOwnFunc: () => {}}*, and in *options.byPath[0]* instead of `{ type: 'number', path: 'somePath', name: 'makeRandomNumber', data: ...}` you can give `{ type: 'number', path: 'somePath', name: 'myOwnFunc' }` and your function will be called for creating data for this path. See also an example in **Examples** section below.
 
 **test**
 
@@ -370,7 +374,7 @@ fs.writeFileSync(
 // [{"dt":"2020-06-14T20:58:47"},{"dt":"2020-08-30T19:59:04"},{"dt":"2020-12-18T07:58:22"}]
 ```
 
-**Copy complex data**
+**Make complex data**
 
 ```
 const category = {
@@ -431,12 +435,15 @@ function makeOptions(arr, qty) {
   };
 }
 
-const options = makeOptions(optsData, 3);
+const options = makeOptions(optsData, 100);
 
 fs.writeFileSync(
   'new-data.json',
   JSON.stringify(DataGen.make(category, options))
 );
+
+// or if you want to log data creation process in the terminal, use test method
+// DataGen.test(category, { testing: { keepDataTypes: true, showAllNewVals: true }, ...options });
 
 // [{
 //   "date": "2020-09-25T02:00:00",
@@ -455,5 +462,48 @@ fs.writeFileSync(
 //   ]
 // },
 // // ...  
+// ]
+```
+
+**Use own function from options.lib**
+
+```
+const data = { price: {} };
+
+const options = {
+  quantity: 100,
+  lib: {
+    makePrice: {
+      make: makePrice,
+      data: ['USD', 'EUR', 'GBP', 'YEN', 'CAD'],
+    },
+  },
+  byPath: [
+    {
+      type: 'object',
+      name: 'makePrice',
+      path: 'price',
+    },
+  ],
+};
+
+function makePrice(d) {
+  let rand = (Math.random() / 2 - 0.05) * 10;
+  rand = rand > 0 ? rand : 0;
+  const currency = d[Math.round(rand)];
+  const amount = +(Math.random() * 1000).toFixed(2);
+
+  return { currency, amount };
+}
+
+DataGen.make(data, options);
+
+// [
+//   { price: { currency: 'GBP', amount: 318.62 } },
+//   { price: { currency: 'GBP', amount: 175.81 } },
+//   { price: { currency: 'USD', amount: 320.51 } },
+//   { price: { currency: 'EUR', amount: 63.57 } },
+//   { price: { currency: 'CAD', amount: 364.55 } },
+// ...
 // ]
 ```
