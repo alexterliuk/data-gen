@@ -86,7 +86,7 @@ function getDataCreators(valueChecker, optionsApp) {
     }
 
     const funcIn_o = _o[option.name];
-    const funcInLib = options.lib && options.lib[option.name]; // TODO: maybe - (options.lib && options.lib[option.name]) || {}
+    const funcInLib = options.lib && options.lib[option.name];
 
     if (funcIn_o && !option.data) {
       _o.notifyOn.optionNotComplete(option);
