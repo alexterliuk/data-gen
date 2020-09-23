@@ -165,14 +165,14 @@ option.data for next two functions - makeRandomText, makeRandomName - has simila
   - maxLength - `number`
   - capitalizeFirstLetter - `boolean` (true by default)
   - capitalizeAllLetters - `boolean`
-  - collection - `array<strings>` (make text from given texts; if present, no other prop of text-specs is checked, because they aren't needed)
+  - collection - `array<strings>` (get a text from given texts; if present, no other prop of text-specs is checked, because they aren't needed)
 
 **makeRandomText**
 
   - ...<*text-specs*>
   - startFromBeginning - `boolean` (slice from start of text sample, false by default)
 
-This function has a built-in dummy text sample from which random parts are being sliced to compose a new text within specified min/maxLength. If collection is provided, built-in text sample is ignored and a new text is created from randomly picked strings inside the collection.
+This function has a built-in dummy text sample from which random parts are being sliced to compose a new text within specified min/maxLength. If collection is provided, built-in text sample is ignored and a new text is created by picking randomly one of the strings from the collection.
 
 **makeRandomName**
 
