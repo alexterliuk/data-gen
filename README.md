@@ -1,3 +1,7 @@
+<h1 align="center">
+  <img width="240" src="media/data-gen-logo.jpg" alt="DataGen logo">
+</h1>
+
 > Clone data with same or random values.
 
 ## Install
