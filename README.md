@@ -12,9 +12,9 @@ npm i @alexterliuk/data-gen
 
 ## About
 
-DataGen is a cloning utility that creates _n_ instances of original data with the same or randomized values. It takes in `object` or `array`, traverses over all nested data and returns `array` with the desired quantity of instances that have the same structure. And what values created depends on the options you provided.
+DataGen is a cloning utility that creates _n_ copies of original data with the same or randomized values. It takes in `object` or `array`, traverses over all nested data and returns `array` with the desired quantity of copies that have the same structure. And what values created depends on the options you provided.
 
-For example, given an input `{ weather: 'sunny', temp: 30 }`, you can get back `[{ weather: 'rainy', temp: 17 }, { weather: 'foggy', temp: 3 }]` if you specify such options. If no options provided, you will get instances with default values `{ weather: '', temp 0 }`.
+For example, given an input `{ weather: 'sunny', temp: 30 }`, you can get back `[{ weather: 'rainy', temp: 17 }, { weather: 'foggy', temp: 3 }]` if you specify such options. If no options provided, you will get copies with default values `{ weather: '', temp 0 }`.
 
 Maximum nesting level is 100, below it data is not processed. The restriction is set to avoid infinite loop in case if some child has its parent nested deeper in the tree.
 
@@ -91,7 +91,7 @@ There are three public methods of DataGen.
       - doubleQuotes - `boolean` (if true - usages["0"])
       - squareBraced - `boolean` (if true - \['usages']['0'] or \["usages"]["0"])
 
-It makes *n* instances of data where *n* is `number` specified in options.quantity. Created data is returned inside `array`. If no options.quantity given, it returns empty `array`.
+It makes *n* copies of data where *n* is `number` specified in options.quantity. Created data is returned inside `array`. If no options.quantity given, it returns empty `array`.
 
 If no pathSyntax is given, default format for specifying path in option.path is - `x.someProp[0]`.\
 If *singleQuotes: true* is set, path format is - `x.someProp['0']`.\
