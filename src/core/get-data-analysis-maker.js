@@ -74,10 +74,10 @@ function getDataAnalysisMaker(valueChecker) {
           if (_v.isArray(el)) describeArray(':root', el, target, currentLevel);
 
         } else {
-          const parent = el.propertyName || el.index;                                          // el.propertyName || el.index) || ':root'
-          const callData = el.propertyValue || el.indexValue;                                  // el.propertyValue || el.indexValue) || el
-          if (el.type === 'object') describeObject(parent, callData, target, currentLevel);    // if (el.type === 'object' || _v.isObject(el)) describeObject...
-          if (el.type === 'array') describeArray(parent, callData, target, currentLevel);      // if (el.type === 'array' || _v.isArray(el)) describeArray...
+          const parent = el.propertyName || el.index;
+          const callData = el.propertyValue || el.indexValue;
+          if (el.type === 'object') describeObject(parent, callData, target, currentLevel);
+          if (el.type === 'array') describeArray(parent, callData, target, currentLevel);
         }
       });
 
